@@ -1,0 +1,1544 @@
+{
+  "glourseleste": {
+    "invul": "Invulnérable. Chaque joueur doit le frapper au CaC (< 2 PO) pour le rendre vulnérable pendant son propre tour.",
+    "danger": "Le frapper au CàC repousse de 4 cases tout ce qui est en ligne à 4 PO du boss : subir des dommages de poussée vous tue. Retirer PA/PM/PO ou pousser/attirer le Glourséleste ressuscite les monstres déjà tués. Tenter de détacler un monstre vous tue.",
+    "control": "Aucun obstacle dans l’axe des alliés avant de le taper au CàC. Le Glouragan attire en ligne quand on le tape : gardez le Glourséleste hors de sa ligne.",
+    "tip": "Ne lui retirez jamais de PM/PO et ne le déplacez pas."
+  },
+  "missiz frizz": {
+    "invul": "Invulnérable. Poussez-la (ou via une chaîne de poussée) contre une Congère pour la rendre vulnérable.",
+    "danger": "La pousser contre une congère la soigne de 15 % PV max. Elle applique l’état Lourd (impossible de la porter).",
+    "control": "Jeu à distance + sorts de poussée en gardant vos persos loin des congères.",
+    "tip": "Poussez-la contre une congère juste avant votre gros tour de dégâts."
+  },
+  "nileza": {
+    "invul": "Invulnérable. Infligez-lui des dommages de poussée directs (contre un mur ou une entité) pour le délock pour le tour.",
+    "danger": "Gros renvois de dégâts et état Pacifiste selon votre distance/placement.",
+    "control": "Gardez toujours un sort de poussée disponible (Libération, Épouvante, Mot de frayeur…) et un mur proche.",
+    "tip": "Calez-le près d’un mur pour le délock facilement chaque tour."
+  },
+  "klime": {
+    "invul": "Invulnérable jusqu’au Tour 3. À partir du T3, poussez un allié (joueur ou invoc) au CaC de Klime avec dégâts de poussée.",
+    "danger": "À partir du Tour 2, Klime pose un glyphe blanc : vous devez finir votre tour dessus sous peine d’état Pacifiste.",
+    "control": "Gardez les monstres espacés pour que chaque perso puisse atteindre le glyphe blanc.",
+    "tip": "Préparez votre placement T1–T2 et délockez dès le Tour 3."
+  },
+  "sylargh": {
+    "invul": "Invulnérable. Tuez une 2e fois un ennemi réinvoqué en « Zombie » alors que Sylargh est à 5–10 PO de ce monstre.",
+    "danger": "Tuer un zombie inflige des dégâts en zone et met Pacifiste aux joueurs à > 90 % PV.",
+    "control": "Contrôlez la distance de Sylargh (5–10 PO) avant d’achever un zombie.",
+    "tip": "Éloignez les monstres avant de les tuer pour placer leur réincarnation proprement."
+  },
+  "comte harebourg": {
+    "invul": "Invulnérable. Tours pairs : frappez-le, il est TP symétriquement par rapport à vous. S’il arrive sur un allié (ou un mob), il perd son invulnérabilité et échange sa place avec lui.",
+    "danger": "Si la TP le fait arriver dans un mur : combat perdu. Si l’entité échangée est une invocation : toutes les entités à 3 cases ou moins de sa case d’arrivée meurent. Tours pairs, le frapper vous TP aussi symétriquement par rapport à lui : finir dans un mur vous tue.",
+    "control": "Vérifiez toujours la case d’arrivée symétrique avant de frapper. Début de tour : il pose un glyphe de 3 cases en ligne, qui tue ceux qui commencent leur tour dessus. Vulnérable, il crée des doubles en fin de tour.",
+    "tip": "La confusion change selon vos % PV en début de tour, et chaque ligne de dégâts au CàC ajoute +90° anti-horaire. Elle ne s’applique pas aux invocations. Il frappe en ligne jusqu’à 14 PO et retire des PA à 4 PO.",
+    "paliers": [
+      {
+        "label": "Vos PV 100–90 % · 90° horaire",
+        "hpPct": 100,
+        "nextPct": 90,
+        "hpScope": "player",
+        "state": "Confusion π/2 Horaire (+90°)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Vos sorts dévient de 90° dans le sens horaire. Chaque coup reçu au CàC ajoute +90° contre-horaire.",
+        "action": "Viser à 90° à gauche (anti-horaire) de la case voulue, ou placer vos alliés en ligne/diagonale simple."
+      },
+      {
+        "label": "Vos PV 89–75 % · 90° anti-horaire",
+        "hpPct": 89,
+        "nextPct": 75,
+        "hpScope": "player",
+        "state": "Confusion 3π/2 (90° Anti-h.)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Vos sorts dévient de 90° contre-horaire (270° horaire).",
+        "action": "Viser à 90° à droite (horaire) de la cible réelle. Vérifier le buff en début de tour."
+      },
+      {
+        "label": "Vos PV 74–45 % · 180°",
+        "hpPct": 74,
+        "nextPct": 45,
+        "hpScope": "player",
+        "state": "Confusion π (180°)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Inversion totale de 180° (même angle dans les deux sens).",
+        "action": "Viser exactement à l’opposé de la cible par rapport à votre personnage : palier le plus facile à calculer."
+      },
+      {
+        "label": "Vos PV 44 % et moins · 90° anti-h., puis horaire sous 30 %",
+        "hpPct": 44,
+        "nextPct": 0,
+        "hpScope": "player",
+        "state": "π/2 Anti-h. (44-30%) → π/2 H. (<30%)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Entre 44% et 30% PV : 90° contre-horaire (3π/2). Sous 30% PV : repasse à 90° horaire (π/2). Cumul 2π (360°) = pas de déviation.",
+        "action": "Adapter vos soins avant le début de tour pour maintenir vos DPS sur le palier le plus confortable."
+      }
+    ],
+    "palierTitle": "Confusion",
+    "palierAll": "Toutes",
+    "palierSection": "Confusion selon vos PV"
+  },
+  "ilyzaelle": {
+    "invul": "Vulnérable en phase ennemie. Devient invulnérable et alliée 2 tours à 75% et 50% PV, puis invulnérable 1 tour en repassant ennemie.",
+    "danger": "T3, T6, T9… (« Vers les ténèbres ») : attire toute l’équipe de 10 cases sans LoS. Invoque des Brulâmes (+300% vitalité) tous les 3 tours.",
+    "control": "T2, T5, T8… : cachez-vous derrière obstacles / Cawotte / Stabilisation. Retrait PM sans dégâts et poussez les mobs dans son glyphe (+400% dmg joueurs / 15 000 mobs).",
+    "tip": "On ne tue pas Ilyzaelle à 0 PV : 2 tours après le seuil des 50% PV, elle OS tous les monstres restants = victoire (gardez au moins 1 mob vivant).",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 75% PV)",
+        "hpPct": 100,
+        "nextPct": 75,
+        "state": "Corrompue (Ennemie)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Vulnérable. Tous les 3 tours (T3, T6…), « Vers les ténèbres » attire toute l’équipe de 10 cases sans LoS et invoque des Brulâmes (+300% vita).",
+        "action": "Se cacher derrière des obstacles (Cawotte/murs) T2, T5, T8… puis descendre Ilyzaelle à 75% PV."
+      },
+      {
+        "label": "Palier 2 (Seuil 75% : Glyphe 1)",
+        "hpPct": 75,
+        "nextPct": 50,
+        "state": "Alliée + Invulnérable 2t",
+        "buffs": {
+          "pm": -100,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 75% PV : passe alliée 2 tours (-100 PM), pose glyphe orange taille 3 (+400% dmg, -30% subis joueurs ; +2 PM & 15 000 dmg aux mobs), puis reste invulnérable 1t.",
+        "action": "Jouer dans le glyphe (ou pousser les mobs dedans) pour nettoyer la salle avant d’enchaîner vers le seuil des 50% PV."
+      },
+      {
+        "label": "Palier 3 (Seuil 50% : Victoire)",
+        "hpPct": 50,
+        "nextPct": 0,
+        "state": "Alliée + Glyphe 2 (OS final)",
+        "buffs": {
+          "pm": -100,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 50% PV : repasse alliée 2 tours (-100 PM, invulnérable) et pose le 2e glyphe. Au bout de 2 tours, tue instantanément tous les monstres et termine le combat.",
+        "action": "Survivre 2 tours grâce aux bonus du glyphe en veillant à garder au moins 1 monstre en vie jusqu’à son OS final."
+      }
+    ]
+  },
+  "reine des voleurs": {
+    "invul": "Pas d’invulnérable sur le boss, mais elle réduit d’autant plus les dégâts qu’il y a de Bonbombes rouges sur la map (invulnérables et Lourdes, mais poussables).",
+    "danger": "Chaque perso pose 1 Bonbombe rouge à 2 PO devant lui par tour (à 2 bombes, l’ancienne explose et OS en ligne sur 10 PO). Mort en Sursis condamne la cible.",
+    "control": "Si une bombe explose en diagonale d’une autre, elle devient Bleue (soigne sur 10 PO en ligne et dissipe Mort en Sursis !). Poussez et rall PM la Reine loin dès T1.",
+    "tip": "Passez en mode non-créature pour voir les tours des bombes, jouez groupés en diagonale et poussez les bombes pour créer des bombes bleues."
+  },
+  "roi nidas": {
+    "invul": "Pas d’invulnérabilité. Un joueur invoque la Boubourse au début du combat : elle donne 500 PB à chaque personnage.",
+    "danger": "Si la Boubourse est tuée, elle passe dans le camp ennemi et Nidas peut échanger avec elle sans LdV à 5 PO. Le Lévitrof pose « Reflets placides » à 10 PO : le personnage touché doit échanger de place avec lui en lui faisant des dégâts, sinon il est OS (1 seul échange possible).",
+    "control": "Protégez la Boubourse : Nidas peut l’OS en mêlée. Il tape jusqu’à 7 PO en zone et échange de position à 6 PO en ligne en attirant.",
+    "tip": "Le personnage touché par « Reflets placides » fait lui-même l’échange avec le Lévitrof : personne d’autre ne peut le faire à sa place."
+  },
+  "vortex": {
+    "invul": "0 PM, indéplaçable et invulnérable tant que les 5 vagues ne sont pas vaincues. Chaque monstre tué revient en Zombie : retuez-le exactement à l’heure de l’Auroraire.",
+    "danger": "Vagues tous les 5 tours (T6, T11…) avec 1t d’invulnérabilité. Sort En temps et en heure frappe en ligne droite avec l’Auroraire selon l’heure.",
+    "control": "L’Auroraire avance d’1h à chaque tour de perso (et +1h par glyphe marché). Jouez à 2, 3, 4 ou 6 persos pour maîtriser le cycle de 12h. Retrait PM + Panda clés.",
+    "tip": "Une étoile jaune au-dessus d’un Zombie indique que c’est la bonne heure pour l’achever définitivement ! Survolez Vortex pour voir qui est Zombie."
+  },
+  "chalœil": {
+    "invul": "Totalement invulnérable jusqu’au Tour 20 inclus : devient vulnérable au Tour 21 (+200 Esq. PM et Inébranlable). Nouvelles vagues invulnérables 1t à l’arrivée.",
+    "danger": "Finir sur un dé (1–6) donne son numéro ; si un mob partage le même numéro, vous prenez dégâts + 20% érosion. Gros Yeux (T3, T6…) : dé 4=+3 PM, 5=soin, 6=+600 Pui.",
+    "control": "Pendant 20 tours, nettoyez les 5 vagues et tenez le boss (Panda tank / retrait PM). Éloignez absolument les monstres des dés 4, 5 et 6 avant Gros Yeux.",
+    "tip": "Finissez sur les glyphes blancs soignants posés sous ses dés pour remonter vos PV, et gardez vos gros CD de burst pour le délock du Tour 21."
+  },
+  "merkator": {
+    "invul": "Invulnérable (-50% dégâts distance). Pour délock 1 tour (Mer-Cure) : il doit être en croix diag 3 d’un perso tapé à l’arme, ou croix 3 d’un monstre tapé en mêlée.",
+    "danger": "Ne jamais retirer de PM à Merkator : renvoie de lourds dégâts Feu au lanceur et le soigne. Grosse frappe de zone au CàC.",
+    "control": "Monstres indéplaçables par poussée/attirance classique ; utilisez Corruption (Énu), Rembobinage (Xél) ou Mer-Cure pour bouger Merkator.",
+    "tip": "Astuce Mer-Cure simple : frappez un allié avec une arme à faible coût (2 PA) quand Merkator est dans sa croix diagonale de 3 cases, puis burstez-le au CàC."
+  },
+  "capitaine meno": {
+    "invul": "Jamais invulnérable, mais réduit tous les dégâts subis de 50%. Les joueurs gagnent +20% dommages finaux cumulables chaque tour.",
+    "danger": "Soin du boss dès qu’un monstre inflige des dégâts. Ses invocs (invulnérables, meurent en 4 tours) et monstres mutent sous 75/50/25% PV.",
+    "control": "Pousser les monstres SANS dommages de poussée retire leur Mutation. Érosion indispensable sur Meno ; retrait PM / tacle (il a 200 Fuite).",
+    "tip": "Ne tapez pas les invocations (elles meurent seules en 4t) ; montez vos stacks de +20% dmg finaux en contrôlant les mobs avant de burst Meno.",
+    "paliers": [
+      {
+        "label": "Palier 1 · PV des mobs 100–76 %",
+        "hpPct": 100,
+        "nextPct": 76,
+        "hpScope": "mobs",
+        "state": "Aucune Mutation (-50% dmg boss)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Monstres sans mutation. Meno réduit les dégâts subis de 50% ; joueurs gagnent +20% dommages finaux/tour. T2+ : invoque des mobs invulnérables.",
+        "action": "Temporiser, repousser les invocs (meurent au T4) et poser de l’érosion sur Meno."
+      },
+      {
+        "label": "Palier 2 · PV des mobs 75–51 %",
+        "hpPct": 75,
+        "nextPct": 51,
+        "hpScope": "mobs",
+        "state": "Mutation I (Début de tour)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "En début de tour (zone 2 PO), les monstres sous 75% PV passent en Mutation I et débloquent un sort supplémentaire.",
+        "action": "Pousser les monstres mutés SANS dommages de poussée pour retirer leur état Mutation."
+      },
+      {
+        "label": "Palier 3 · PV des mobs 50–26 %",
+        "hpPct": 50,
+        "nextPct": 26,
+        "hpScope": "mobs",
+        "state": "Mutation II (+1 PM mobs)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Les monstres entre 50% et 26% PV passent en Mutation II : sort renforcé et gain de +1 PM sur les monstres mutés.",
+        "action": "Retirer des PM ou pousser sans Do Pou pour éviter que les mobs frappent (chaque coup reçu soigne Meno)."
+      },
+      {
+        "label": "Palier 4 · PV des mobs 25–0 %",
+        "hpPct": 25,
+        "nextPct": 0,
+        "hpScope": "mobs",
+        "state": "Mutation III (Max)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Les monstres sous 25% PV passent en Mutation III : puissance maximale de leurs sorts de mutation.",
+        "action": "Achever les monstres entamés ou retirer la mutation par poussée pure, puis burst Meno une fois vos +20% dmg/t chargés."
+      }
+    ]
+  },
+  "tal kasha": {
+    "invul": "Invulnérable tant qu’elle n’a pas commencé son tour sur 3 glyphes distincts. Tuer un monstre pose un glyphe sous lui (puis il réapparaît).",
+    "danger": "Tape à travers tous les monstres (doublures) en ligne : ne restez jamais aligné avec un mob. Taper un mob colle Maudification au proche (-50% dmg dist, -2 PM).",
+    "control": "1 retrait PM sur Tal Kasha = échange de place avec elle (1x/t) : servez-vous-en ou du Panda pour l’amener sur les 3 glyphes. Retirez Maudification avec des Do Pou.",
+    "tip": "Pour supprimer un monstre définitivement, tuez 2 monstres différents sur la même case dans le même tour ! Une fois délock, elle le reste tout le combat."
+  },
+  "koutoulou": {
+    "invul": "Pas d’invulnérable de base, mais taper un monstre fait permuter avec l’entité la plus proche ; permuter 2 fois dans le tour avec le même mob le rend invulnérable 1t.",
+    "danger": "Début de tour : attire au CàC tout perso en ligne de vue. Folie 2+ renvoie des dégâts en zone 2 ; Folie 4 soin/2 ; Folie 6 dégâts x2 ; Folie 10 = OS.",
+    "control": "Ne finissez jamais en LdV du Koutoulou (cachez-vous derrière décor/invoc). Focus Klûtiste → Li-Fo → Shokot/Grofond. Espacez vos alliés.",
+    "tip": "Les poisons (Sram, Ébène…) ne déclenchent ni échange de place, ni invulnérabilité, ni bouclier ! La Folie baisse si le perso ne subit aucune attaque pendant 1 tour."
+  },
+  "dazak martegel": {
+    "invul": "Plus de 100% de résistances. Chaque poussée/attirance lui retire 5% de résistances dès qu’il est en Nimpatience 3. Il gagne de la Nimpatience à chaque tour où il ne tape personne.",
+    "danger": "S’il subit des dommages de poussée, il gagne +10% résistances : poussez sans le cogner contre un obstacle. Il tape fort en mêlée (40% d’érosion, -10% rés) et peut se TP à 5 PO en ligne tous les 2 tours dès T2.",
+    "control": "Restez hors de sa mêlée pour qu’il monte en Nimpatience. Il booste les autres monstres de 2 PM et 1500 PB tous les 2 tours dès T3 : tuez-les vite.",
+    "tip": "Gardez vos sorts de poussée/attirance pour la Nimpatience 3, et jamais de dommages de poussée."
+  },
+  "kabahal": {
+    "invul": "Totalement invulnérable aux joueurs (50% rés partout). Seuls les Bras démoniaques invoqués peuvent lui infliger des dégâts. Finir sur une rune bloque l’apparition d’un bras et donne le contrôle des Bras.",
+    "danger": "Si 5 Bras démoniaques coexistent, Kabahal déclenche le Ch’Tyx et OS toute l’équipe au tour suivant. Vagues dès le Tour 5 (tous les 2t). Boosts +30% dmg alternés.",
+    "control": "Placez/taclez Kabahal (Panda) entre les Bras et runes. Tapez Kabahal en Neutre pour baisser ses rés Neutres avant de frapper avec les Bras.",
+    "tip": "Utilisez Aplatissement Démoniaque sur vos propres Bras contrôlés pour baisser leurs PV et en tuer un avant d’atteindre la limite fatale des 5 Bras (kill idéal au T7 max).",
+    "paliers": [
+      {
+        "label": "Phase Tours impairs (+30% Dist.)",
+        "hpPct": 100,
+        "nextPct": null,
+        "state": "D’une main de maître (Tours impairs)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Invulnérable aux joueurs (seuls les Bras démoniaques le frappent). Tours impairs : +30% dommages à distance. Des runes préparent les Bras au tour suivant.",
+        "action": "Taper en Neutre pour baisser ses rés Neutres, placer Kabahal entre les Bras et finir sur une rune pour contrôler les Bras."
+      },
+      {
+        "label": "Phase Tours pairs (+30% Mêlée)",
+        "hpPct": 100,
+        "nextPct": null,
+        "state": "Menace Grandissante (Tours pairs)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Tours pairs : +30% dommages en mêlée. Si 5 Bras démoniaques coexistent, Kabahal déclenche le Ch’Tyx et OS toute l’équipe au tour suivant.",
+        "action": "Affaiblir un Bras avec Aplatissement Démoniaque pour en tuer un avant la limite des 5 Bras, et garder le boss taclé."
+      },
+      {
+        "label": "Phase T5+ (Vagues possédées)",
+        "hpPct": 100,
+        "nextPct": 0,
+        "state": "Vagues dès Tour 5 (tous les 2t)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À partir du Tour 5 puis tous les 2 tours, invoque une vague de monstres possédés (-50% PV).",
+        "action": "Si Kabahal est vers ~50% PV au T5, ignorer la vague et le finir avec les Bras (idéalement avant/au T7)."
+      }
+    ]
+  },
+  "belladone": {
+    "invul": "Invulnérable sur son îlot tant que des monstres vivent (Ensorcellement I/II/III à chaque monstre tué). À 50% PV, TP sur son îlot, redevient invulnérable, reset positions et réinvoque les monstres.",
+    "danger": "Sur son îlot, toute cible en LdV reçoit Glyphe de condamnation (OS au début du tour). Les monstres réinvoqués en P2 gagnent +10% dmg finaux et -10% rés par début de tour. Érosion très élevée.",
+    "control": "Ne jamais rester en LdV de Belladone quand elle est sur son îlot. Tuez tous les monstres pour la faire descendre, puis taclez/bloquez-la avec boucliers.",
+    "tip": "Au seuil 50% PV, les monstres réinvoqués sont invulnérables 1 tour : coupez vite la LdV de l’îlot puis burst les monstres avant que leurs +10% dmg/t s’accumulent.",
+    "paliers": [
+      {
+        "label": "Palier 1 (Îlot P1 : 100% PV)",
+        "hpPct": 100,
+        "nextPct": 50,
+        "state": "Sur îlot / Invulnérable (Ensorcellement)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Immobile et invulnérable sur son îlot. Chaque monstre tué augmente Ensorcellement (I→III, renforce les mobs). Toute LdV avec l’îlot pose Glyphe de condamnation (OS).",
+        "action": "Couper la LdV de Belladone et éliminer tous les monstres : à la mort du dernier, elle se TP sur le joueur le plus éloigné et devient vulnérable."
+      },
+      {
+        "label": "Palier 2 (Sol P1 : 100% - 50% PV)",
+        "hpPct": 100,
+        "nextPct": 50,
+        "state": "Vulnérable au sol (P1)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Descend au sol avec de gros vols de vie (Conjuration entravante -4 PA Neutre, Déchaînement fantasmagorique Feu/Eau).",
+        "action": "La tacler sur un tank avec boucliers et la descendre jusqu’au seuil des 50% PV."
+      },
+      {
+        "label": "Palier 3 (Seuil 50% : Îlot P2 + Vague 2)",
+        "hpPct": 50,
+        "nextPct": 50,
+        "state": "Retour îlot / Vague 2 (+10% dmg/t)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 50% PV, TP sur son îlot (invulnérable), reset les positions et réinvoque les monstres (invulnérables 1t, +10% dmg finaux et -10% rés par début de tour).",
+        "action": "Couper immédiatement la LdV de l’îlot (Glyphe OS) et burst vite la 2e vague de monstres avant que leurs dégâts n’explosent."
+      },
+      {
+        "label": "Palier 4 (Sol P2 : 50% - 0% PV)",
+        "hpPct": 50,
+        "nextPct": 0,
+        "state": "Vulnérable finale (50% - 0% PV)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Redescend définitivement après la mort de la 2e vague face à une équipe fortement érodée.",
+        "action": "Protéger le focus avec soins/boucliers, limiter le retrait PA et achever Belladone rapidement."
+      }
+    ]
+  },
+  "kolosso": {
+    "invul": "Invulnérable. Il faut lui infliger des dégâts avec une invocation pour le rendre vulnérable.",
+    "danger": "Razepoutine : énorme cône infini derrière toute cible à son CàC (allié ou invoc) — ne vous alignez jamais derrière ! Enrage si Professeur Xa meurt.",
+    "control": "Clean d’abord Blérom (sacrifice) et Blérauve. Retirez des PM au Kolosso et ne laissez personne derrière la cible au CàC. Il peut soigner un monstre en l’attirant à 3 PO.",
+    "tip": "Poussez ou éloignez d’1 case votre invocation juste après qu’elle ait tapé le Kolosso : s’il la tue à son tour, il déclenche son cône mortel Razepoutine vers vous."
+  },
+  "professeur xa": {
+    "invul": "Pas d’invulnérabilité (co-boss du Kolosso), mais applique -10 000 aux soins dès T1 (soins classiques impossibles).",
+    "danger": "Il peut ressusciter les monstres. Il ne tape qu’en mêlée et retire des PA.",
+    "control": "Entourez-le au CàC (ou bloquez sa PO) pour l’empêcher de ressusciter les monstres morts. Tuez les adds pénibles puis Xa juste avant de finir le Kolosso.",
+    "tip": "Le taper le booste de +100 dommages, mais soigne tous vos alliés dans un rayon de 5 cases autour de lui : c’est votre seule source de soin, les soins classiques étant à -10 000."
+  },
+  "grolloum": {
+    "invul": "Invulnérable en permanence. Tous les 2 tours il ressuscite le dernier monstre mort puis lui met Gelée Blanche : tuez ce zombi au CàC du Grolloum pour délock 1 tour.",
+    "danger": "PIÈGE MORTEL : tout retrait PM sur Grolloum lui donne +8000 résistances partout pendant 1 tour ! Il se soigne aussi de 1500 PV/tour.",
+    "control": "Gardez un petit monstre facile (ex: Gobus) comme dernier mob tué pour le ressusciter. Attendez qu’il reçoive Gelée Blanche avant de l’achever collé au boss.",
+    "tip": "Interdiction absolue de retirer des PM au Grolloum ! Amenez le zombi au CàC (Panda/placeur) et posez de l’érosion contre son soin de 1500 PV/t."
+  },
+  "fuji givrefoux": {
+    "invul": "Pas d’invulnérabilité (contrairement au Tengu qui demande Yokaï en diagonale + coup d’arme sur Yomi aligné).",
+    "danger": "Progéniture (mêlée) : OS au contact et transforme en monstre ! Foufoux tape en diagonale. Chaque mort (monstre ou invoc) lui donne +1000 Do et +1 PM.",
+    "control": "Jamais à son CàC ni dans ses diagonales. Tuez les mobs un par un prudemment et entravez les PM de la Fuji.",
+    "tip": "Bannissez les spams d’invocations fragiles qui lui offrent +1000 dommages à chaque mort !"
+  },
+  "ombre": {
+    "invul": "Invulnérable tant que sa Silhouette n’est pas dans le glyphe blanc posé par le Globilum (rayon 3) avec Ombre en dehors.",
+    "danger": "Liaison (2–7 PO) : gros dégâts Neutre attirant cible et boss de 3 cases. Silhouette met -10 PM + érosion. Chaque déplacement sur Ombre/Silhouette donne +100 Puissance (1t).",
+    "control": "Nettoyez d’abord les monstres en reculant. Vous n’avez droit qu’à 1 seul déplacement par tour sur Ombre et sur la Silhouette : placez sans gâcher.",
+    "tip": "Le glyphe du Globilum donne +20% dommages finaux : entrez dedans pour taper Ombre, puis ressortez si besoin. Visez l’axe Silhouette – Globilum – Ombre."
+  },
+  "comte razof": {
+    "invul": "100% résistances de base (pas d’invulnérable). Il perd 20% résistances par invocation non statique vivante en fin de tour. Le plus proche reçoit une Minikrone invulnérable.",
+    "danger": "Si la Minikrone meurt : -20% résistances et -2 PA à toute l’équipe pour le reste du combat. Si elle finit son tour sur son glyphe noir : toute l’équipe perd 2 PM et prend 50% d’érosion 1 tour. Si elle commence son tour au CàC d’un ennemi : -600 Puissance aux alliés 1 tour.",
+    "control": "Tuez Viandargh et Crâmbo à distance, puis Nemroz (piège invisible -PA/-PO). Gardez Razof et la Minikrone séparés et entravez ses PM.",
+    "tip": "Chaque invocation non statique en vie à la fin de son tour lui retire 20% de résistances pour 1 tour, la Minikrone comprise. Il tape fort à 15 PO, retire 6 PM et met Pesanteur/Affaibli."
+  },
+  "protozorreur": {
+    "invul": "Invulnérable, comme ses monstres : on ne le délock pas. Il meurt après avoir été placé 5 fois dans un glyphe violet (une fois tous les 2 tours). Un glyphe violet apparaît sur votre case quand vous recevez des dégâts (alliés ou ennemis).",
+    "danger": "La Malamibe (invocation) intercepte les dommages : si elle n’est pas tuée en 2 tours, elle OS tout le monde. Il attire de 10 cases en ligne à 10 PO quand il est infecté et retire PA/PM à 2 PO.",
+    "control": "Il est indéplaçable, mais le premier qui le tape en ligne l’attire jusqu’à lui (1 fois par tour) : servez-vous-en pour l’amener sur un glyphe violet.",
+    "tip": "Pour tuer les monstres, 5 tours de suite : Virustine sans retrait PM ni déplacement · Verminocule avec un perso (hors invoc) à son contact en début de tour · Bacterrib sans perso à 5 PO ou moins au début de son tour · Pataugerme tapé dans les 4 éléments chaque tour · Tabacille sans soin (vol de vie autorisé)."
+  },
+  "dantinea": {
+    "invul": "Pas d’invulnérabilité, mais chaque joueur est lié au T1 à un Grokillage qui réduit ses dégâts de 50% tant qu’il vit. Tuez votre Grokillage pour taper à 100%.",
+    "danger": "Tous les 5 tours, Dantinéa OS les Grokillages encore en vie et les personnages qui leur sont liés. Tant que votre Grokillage vit, vous perdez aussi 1 PM par tour. À chaque début de tour, elle tape 600 Eau les personnages en ligne avec un Grokillage.",
+    "control": "Tuez votre Grokillage avant l’OS des 5 tours et ne restez pas en ligne avec un Grokillage en fin de tour. Elle peut échanger avec un Grokillage à 6 PO max (dès T2, 1 tour sur 2).",
+    "tip": "Cassez TOUJOURS sa ligne de vue en fin de tour derrière décor ou invocations, et aidez vos alliés à tomber leur coquillage."
+  },
+  "anerice": {
+    "invul": "Pas d’invulnérable mais Résilience vampyrique réduit les dégâts de 90%. S’approcher à 1–3 PO transforme en Goule : chaque Goule baisse sa réduction de dégâts.",
+    "danger": "L’état Goule augmente les dégâts subis de 150% et Anerice se TP au contact des goules pour taper en zone. Chaque 1re attaque sur une goule fait avancer toutes les goules de 3 cases.",
+    "control": "Focus 1 : tuez la Kérigoule avant T2 (partage de dommages). Restez à >5 PO du Gouligane et loin du Goultime. Retrait PM (Énu/Féca) très efficace.",
+    "tip": "Deux stratégies : rester hors de 1–3 PO (érosion + poussée sans goulifier) ou convertir des invocs/persos en Goules en focusant un monstre à la fois."
+  },
+  "solar": {
+    "invul": "Change d’état tous les 3 tours (vulnérable en Nadir au T10). Lancez le sort de quête Nécronyx sur lui pour avancer son cycle d’1 tour.",
+    "danger": "Obligatoire : lancez Nécronyx sur Solar juste avant de l’achever, sinon OS de toute la team.",
+    "control": "Accélérez ses phases avec Nécronyx et préparez le burst pour la phase vulnérable.",
+    "tip": "N’oubliez jamais Nécronyx sur le coup de grâce !",
+    "paliers": [
+      {
+        "label": "Phase 1 : Aube (T1–T3)",
+        "hpPct": 100,
+        "nextPct": null,
+        "state": "Aube (Invulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Cycle de 3 tours par phase (T1→T3 en Aube). Lancer le sort de quête Nécronyx sur Solar avance son cycle d’1 tour.",
+        "action": "Clean les monstres et utiliser Nécronyx si vous souhaitez accélérer l’arrivée en Nadir."
+      },
+      {
+        "label": "Phase 2 : Zénith (T4–T6)",
+        "hpPct": 100,
+        "nextPct": null,
+        "state": "Zénith (Invulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "2e phase du cycle solaire (3 tours sans Nécronyx).",
+        "action": "Maintenir le contrôle de salle et continuer d’avancer le cycle avec Nécronyx selon votre placement."
+      },
+      {
+        "label": "Phase 3 : Crépuscule (T7–T9)",
+        "hpPct": 100,
+        "nextPct": null,
+        "state": "Crépuscule (Invulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Dernière phase invulnérable avant la bascule en Nadir.",
+        "action": "Préparer vos boosts et le placement pour profiter pleinement du délock imminent en Nadir."
+      },
+      {
+        "label": "Phase 4 : Nadir (T10 : Vulnérable)",
+        "hpPct": 100,
+        "nextPct": 0,
+        "state": "Nadir (Vulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Phase vulnérable de Solar (T10 sans accélération). Achever Solar SANS Nécronyx actif sur lui OS toute l’équipe.",
+        "action": "Lancer obligatoirement Nécronyx sur Solar juste avant le coup de grâce !"
+      }
+    ]
+  },
+  "bethel": {
+    "invul": "Invulnérable. Détruisez le Monolithe au CaC (invu à distance) pour que le Dagon passe allié : seul le Dagon peut frapper Bethel (en mêlée).",
+    "danger": "Nécronyx tous les monstres avant de les tuer, Bethel compris, sinon OS. Le glyphe qui fait le tour de la map retire 100 PM et met Pesanteur. Quand le Monolithe meurt, Bethel pose un énorme glyphe qui tape et retire 4 PA / 2 PM.",
+    "control": "Dès T2, finissez votre tour à moins de 6 PO d’un monstre, sinon ils se boostent. Soignez, placez et boostez le Dagon : il est le seul à taper Bethel, en mêlée (~1000/tour).",
+    "tip": "Nécronyx Bethel dès T1 puis tous les 3 tours : sinon il a un sort qui vous pousse, souvent dans le glyphe."
+  },
+  "pretresse de kao": {
+    "invul": "Invulnérable au départ (Artisanat du Kao). Devient vulnérable après avoir détruit 3 Éclats Kao (paliers I, II, III). Prêtresse Intaclable et -50% dmg sur les mobs tant qu’un Éclat vit.",
+    "danger": "Frapper un Éclat applique Chocolathée (3t, indébuffable) : booste les mobs et ajoute +50 dmg par joueur touché à Cloches du Kao (tours impairs).",
+    "control": "OS l’Éclat en 1 coup ou tuez-le aux poisons pour ne pas prendre Chocolathée (sinon il meurt seul après 2t). Un seul Éclat à la fois, relance 2 tours.",
+    "tip": "Une fois le 3e Éclat détruit, les cumuls I–III restent acquis : si elle réinvoque un Éclat plus tard, 1 seul Éclat tué suffit à la redélock.",
+    "paliers": [
+      {
+        "label": "Phase 1 (Éclats I et II)",
+        "hpPct": 100,
+        "nextPct": null,
+        "state": "Invulnérable + Intaclable",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Tant qu’un Éclat Kao vit : -50% dmg subis sur les mobs et Prêtresse Intaclable. Frapper un Éclat applique Chocolathée (3t, renforce Cloches du Kao tours impairs).",
+        "action": "OS l’Éclat en 1 coup ou aux poisons (sans prendre Chocolathée) pour monter les paliers I puis II jusqu’au 3e Éclat."
+      },
+      {
+        "label": "Phase 2 (Palier III : Délock)",
+        "hpPct": 100,
+        "nextPct": 0,
+        "state": "Vulnérable (3 Éclats détruits)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Au 3e Éclat détruit (III), la Prêtresse perd son invulnérabilité. Les cumuls I–III sont conservés si un nouvel Éclat est réinvoqué.",
+        "action": "Burst la Prêtresse dès qu’aucun Éclat n’est en jeu ; si un Éclat réapparaît, détruisez-le en 1 coup pour redélock aussitôt."
+      }
+    ]
+  },
+  "roi imagami": {
+    "invul": "Paliers à 75 %, 50 % et 35 % PV : passe en forme Lotus (enraciné, invulnérable 5 tours) et invoque la Reine, contrôlé par le joueur le plus proche.",
+    "danger": "Pendant les 5 tours de Lotus, il remonte à 100 % PV. Tous les monstres ont un seuil à 10 % PV : ils invoquent alors un monstre à tuer en 4 tours max pour achever le monstre initial.",
+    "control": "Utilisez la Reine pour taper fort et vous booster. Tous les 3 tours il pose des glyphes en croix : soyez au centre à son tour, sinon 700 dégâts.",
+    "tip": "Tuez la Reine avec un de ses propres sorts pour ne pas attendre les 5 tours. À la fin du Lotus, les monstres dans son glyphe sont tués s’il y est toujours.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 75% PV)",
+        "hpPct": 100,
+        "nextPct": 75,
+        "state": "Forme standard (Vulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Boss vulnérable en début de combat avant le premier passage en Lotus.",
+        "action": "Descendre le Roi jusqu’au premier palier des 75% PV tout en gérant la vague d’ouverture."
+      },
+      {
+        "label": "Palier 2 (Seuil 75% : Lotus 1)",
+        "hpPct": 75,
+        "nextPct": 50,
+        "state": "Lotus 5t (Invulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 75% PV : passe en Lotus (invulnérable 5 tours), remonte à 100 % PV et invoque la Reine alliée contrôlée par un joueur. Fin du Lotus = les mobs dans son glyphe meurent.",
+        "action": "Nettoyer les vagues et packer les monstres dans le glyphe de sortie de Lotus avec l’invocation alliée."
+      },
+      {
+        "label": "Palier 3 (Seuil 50% : Lotus 2)",
+        "hpPct": 50,
+        "nextPct": 35,
+        "state": "Lotus 5t (Invulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 50% PV : nouveau cycle Lotus de 5 tours + invocation alliée et glyphe d’explosion en sortie.",
+        "action": "Profiter du glyphe final pour OS les monstres gênants puis préparer le burst vers 25% PV."
+      },
+      {
+        "label": "Palier 4 (Seuil 35% - 0% : Lotus 3)",
+        "hpPct": 35,
+        "nextPct": 0,
+        "state": "Dernier Lotus → Fin",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 35% PV : déclenche le 3e et dernier Lotus avant la phase d’exécution finale.",
+        "action": "Sortir proprement du dernier Lotus puis achever le Roi sans le laisser régénérer."
+      }
+    ]
+  },
+  "reine amirukam": {
+    "invul": "Paliers à 75 %, 50 % et 35 % PV : passe en forme Lotus (enraciné, invulnérable 5 tours) et invoque le Roi, contrôlé par le joueur le plus proche.",
+    "danger": "Pendant les 5 tours de Lotus, il remonte à 100 % PV. Tous les monstres ont un seuil à 10 % PV : ils invoquent alors un monstre à tuer en 4 tours max pour achever le monstre initial.",
+    "control": "Nettoyez les vagues avec l’invocation alliée ; à la sortie du Lotus, les mobs dans son glyphe sont OS.",
+    "tip": "Tuez le Roi avec un de ses propres sorts pour ne pas attendre les 5 tours. À la fin du Lotus, les monstres dans son glyphe sont tués s’il y est toujours.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 75% PV)",
+        "hpPct": 100,
+        "nextPct": 75,
+        "state": "Forme standard (Vulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Boss vulnérable au départ avant le premier passage en forme Lotus à 75% PV.",
+        "action": "Descendre la Reine vers le seuil des 75% PV tout en contrôlant les monstres."
+      },
+      {
+        "label": "Palier 2 (Seuil 75% : Lotus 1)",
+        "hpPct": 75,
+        "nextPct": 50,
+        "state": "Lotus 5t (Invulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 75% PV : passe en Lotus (invulnérable 5 tours), remonte à 100 % PV et invoque le Roi allié contrôlé par un joueur. Sortie de Lotus = les mobs dans son glyphe meurent.",
+        "action": "Utiliser le Roi allié pour clean les vagues et placer les monstres dans le glyphe de sortie."
+      },
+      {
+        "label": "Palier 3 (Seuil 50% : Lotus 2)",
+        "hpPct": 50,
+        "nextPct": 35,
+        "state": "Lotus 5t (Invulnérable)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 50% PV : déclenche le 2e Lotus de 5 tours avec invocation du Roi allié.",
+        "action": "Clear la vague et packer les monstres dans le glyphe de fin de Lotus."
+      },
+      {
+        "label": "Palier 4 (Seuil 35% - 0% : Lotus 3)",
+        "hpPct": 35,
+        "nextPct": 0,
+        "state": "Dernier Lotus → Fin",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 35% PV : dernier cycle Lotus de 5 tours avant de pouvoir terminer la Reine.",
+        "action": "Survivre au dernier Lotus puis focus et burst la Reine dès sa sortie."
+      }
+    ]
+  },
+  "eternel conflit": {
+    "invul": "Invulnérable. Tuer Bonraphin (invulnérable à distance) le rend vulnérable à distance ; tuer Brâklotin (invulnérable en mêlée) le rend vulnérable en mêlée. Il ne descend pas sous 20 % PV tant que l’État X n’est pas déclenché.",
+    "danger": "En État X : il tue les 2 diablotins, devient vulnérable 2 tours, gagne ~9000 PB et 400 Fuite, invoque le Cauchemar des Ravageurs et perd son seuil des 20 %. Une seule fois par combat. Finir son tour sans LdV sur un ennemi invoque aussi le Cauchemar.",
+    "control": "Pour l’État X, faites descendre les compteurs des diablotins (10 chacun) : Bonraphin en le tapant à distance, Brâklotin en le tapant en mêlée (2 fois par tour chacun). À 10 Colère + 10 Haine, il passe en État X au tour suivant.",
+    "tip": "Préparez du débuff/burst bouclier avant d’atteindre les 10 charges (État X) pour tomber le bouclier et finir sous les 20%."
+  },
+  "cire momore": {
+    "invul": "Invulnérable sauf si un perso est à ≤2 PO de lui (état Âmes Hurlantes : -1 PM et Pesanteur, ou Indéplaçable <80% PV). Dès qu’on sort de ses 2 PO, il redevient invulnérable.",
+    "danger": "OS tout perso restant à ≤2 PO au début de son tour, et OS toute l’équipe au Tour 25. Briselâme applique 15% érosion.",
+    "control": "Hit-and-run : entrez à ≤2 PO, tapez, puis exfiltrez-vous (portails Élio, Panda…) sans laisser personne à ≤2 PO. Pas de spam d’invocations (il se boost/soigne dessus).",
+    "tip": "Dofus Abyssal ou don de PM clé pour compenser le -1 PM et ressortir des 2 PO ; prévoir ~50% rési Feu et gros burst avant le T25."
+  },
+  "dechireuse": {
+    "invul": "Invulnérable au départ. Délock via l’Autel de Chasse selon la saison : tapez 5x le mob saisonnier + placez cible/boss proche Autel.",
+    "danger": "Se TP en mêlée d’un joueur en LdV (même sous Pesanteur) → OS à la 2e TP sur le même joueur. À 1 PV : soin 100% PV (anti-érosion/insoignable) + Barbarisme.",
+    "control": "Bloquez ses lignes de vue (invocs, arbres, balises, tourelles). Retrait PM indispensable ; Brutank (partage dmg) est désenvoûtable.",
+    "tip": "Pas d’invulnérabilité entre P1 et P2 : préparez un gros burst pour l’OS juste avant 1 PV, sinon gérez sa P2 Barbarisme (Lourd).",
+    "paliers": [
+      {
+        "label": "Phase 1 (100% → 1 PV)",
+        "hpPct": 100,
+        "nextPct": 1,
+        "state": "Invulnérable → Délock Autel",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "5 vagues. Délock via Autel de Chasse (5 coups sur mob saisonnier + placement Autel). Se TP au CàC en LdV (même sous Pesanteur ; OS à la 2e TP sur le même joueur).",
+        "action": "Boucher ses LdV (invocs/arbres/balises), délock à l’Autel et préparer un gros burst juste avant 1 PV."
+      },
+      {
+        "label": "Phase 2 (Seuil 1 PV → 100%)",
+        "hpPct": 1,
+        "nextPct": 0,
+        "state": "Barbarisme + Lourd (100% PV)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 1 PV : se soigne à 100% PV (anti-érosion/insoignable), change de forme sans invulnérabilité et gagne Barbarisme + Lourd (importable, attire + vol de fuite).",
+        "action": "Tenter de l’OS avant 1 PV ; sinon tenir à distance (retrait PM + blocage LdV) et débuffer Brutank."
+      }
+    ]
+  },
+  "venerable endormi": {
+    "invul": "Invulnérable en phase Endormi. Délock en tuant sa Monture (même PV max) ou si un monstre devient Alerté à ≤3 PO (vulnérable 2 tours).",
+    "danger": "5 vagues (T1/6/11/16/21, invulnérables 1t). À ≤50% PV : état Gare au Gorille (+20% dmg finaux, +4 PO, +100 Do Pou, +60 ret PA/PM).",
+    "control": "Monstres Apathiques (-80% PM, soin/t) passent Alertés si tapés à 3 PO ou T3. Tenez le boss loin avec retrait PM/PO et Pesanteur (bloque sa TP).",
+    "tip": "Nettoyez les vagues avant de réveiller le boss : tant qu’il dort il ne joue pas (soin 5% PV/t seulement). En P2 (50% PV), il réinvoque sa Monture.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 51% : Sommeil)",
+        "hpPct": 100,
+        "nextPct": 50,
+        "state": "Endormi (Passif / Invulnérable)",
+        "buffs": {
+          "pm": -100,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Inoffensif (-100 PM, indéplaçable, passe son tour, soin 5% PV/t). Sa Monture donne +20% dommages finaux aux monstres. 5 vagues (T1/6/11/16/21).",
+        "action": "Éviter de frapper un monstre à ≤3 PO du boss pour le laisser dormir le temps de nettoyer les vagues."
+      },
+      {
+        "label": "Palier 2 (Délock Phase 1 : >50%)",
+        "hpPct": 100,
+        "nextPct": 50,
+        "state": "Alerté / Vulnérable",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Tuer sa Monture ou passer un monstre en Alerté à ≤3 PO le rend vulnérable 2 tours. Retire PA/PM en zone tous les 2 tours et TP à 6 PO.",
+        "action": "Appliquer Pesanteur (bloque sa TP) et retrait PM/PO, puis le descendre vers le seuil des 50% PV."
+      },
+      {
+        "label": "Palier 3 (≤ 50% PV : Gare au Gorille)",
+        "hpPct": 50,
+        "nextPct": 0,
+        "state": "Gare au Gorille (+20% dmg, +4 PO)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 50% PV : redevient invulnérable, réinvoque sa Monture et gagne à vie +20% dmg finaux, +4 PO, +100 Do Pou et +60 retrait PA/PM.",
+        "action": "Retuer sa Monture pour le redélock, maintenir Pesanteur + retrait PM/PO à distance et l’achever rapidement."
+      }
+    ]
+  },
+  "corruption": {
+    "invul": "Kissiphrot Sipique punit chaque coup (~1400 poison Terre cumulable). Soigner effectivement (ou vol de vie) une cible à son CàC le fait descendre de monture pour 3 tours.",
+    "danger": "Peau pourrissante (-90% dmg finaux, -10% PV/t dès T2). Cumuler >3 maladies déclenche la Phase Germinal (+200% dmg subis, Nheur’Gueule invoqué). Glyphes Bouillon de culture sur monture.",
+    "control": "Pas de palier % PV : alternance Monture / À pied. Délockez-le au CàC avec un soin effectif (le repousse d’1 case), puis burst pendant ses 3 tours au sol.",
+    "tip": "Pour sortir de Germinal, tuez le Nheur’Gueule et soignez 3 fois le joueur touché. Sur monture, ne retirez pas Peau pourrissante sur les persos non-DPS.",
+    "paliers": [
+      {
+        "label": "Phase 1 : Sur monture",
+        "hpPct": 100,
+        "nextPct": null,
+        "state": "Monture + Kissiphrot Sipique",
+        "spellFilter": "HS=1627",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Kissiphrot Sipique inflige ~1400 poison Terre par ligne reçue. Sur monture, Corruption pose des glyphes Bouillon de culture et applique Incu-Batteur.",
+        "action": "Soigner effectivement (ou vol de vie) une cible au CàC de Corruption/monstres pour retirer Kissiphrot Sipique et le faire descendre de monture."
+      },
+      {
+        "label": "Phase 2 : À pied (Délock 3t)",
+        "hpPct": 100,
+        "nextPct": 0,
+        "state": "À pied (3 tours sans Bouillon)",
+        "spellFilter": "HS!1627",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Descend de monture 3 tours : plus de Bouillon de culture, mais gagne Liquéfaction / Putréfaction / Éclosion germinal (+maladies). Remonte après 3 tours.",
+        "action": "Burst Corruption pendant ces 3 tours sans dépasser 3 maladies par personnage (sinon Phase Germinal)."
+      }
+    ]
+  },
+  "servitude": {
+    "invul": "Renvoie les dégâts sauf sous état Traître (finir sur glyphe blanc = Traître 1, puis taper un allié jusqu’à 5 cumuls ; 1 cumul consommé par ligne). Rollback + soin 25% à 1 PV.",
+    "danger": "Armécréante (5500 PV) invoquée tous les 2t : si vous ne la frappez PAS au moins 1 fois, elle invoque un Iopprimé dévastateur. Son sort Domestication renvoie aussi sa cible au spawn (contrable par Pesanteur/Stab). Échange Tyrannie sous ≤50% PV.",
+    "control": "Astuce clé : il suffit de frapper l’Armécréante 1 fois avant son tour pour bloquer l’invocation du Iopprimé (tuez-la si possible, ou au minimum touchez-la une fois). Chargez Traître sur glyphe blanc + coup sur allié (ou utilisez des poisons qui ignorent le renvoi).",
+    "tip": "Posez Insoignable + poison juste avant le seuil à 1 PV : cela annule son soin de 25% en Phase 3 et l’achève au début de son tour.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 50% PV)",
+        "hpPct": 100,
+        "nextPct": 50,
+        "state": "Phase 1 à pied",
+        "spellFilter": "HS=1524",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Renvoie les dégâts sans Traître. Invoque une Armécréante tous les 2 tours (invoque un Iopprimé si elle n’est pas frappée). Asservissement attire et donne +100 Tacle (1t) à Servitude.",
+        "action": "Finir sur glyphe blanc (Traître) puis taper un allié pour monter les cumuls ; frapper chaque Armécréante au moins 1 fois (ou la tuer) pour empêcher le Iopprimé."
+      },
+      {
+        "label": "Palier 2 (50% - 1 PV)",
+        "hpPct": 50,
+        "nextPct": 1,
+        "state": "Phase 2 sur monture",
+        "spellFilter": "HS=1525",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Monte sur sa monture à 50% PV : Tyrannie échange une Armécréante avec le joueur le plus proche sans limite de PO ; Asservissement vole 1 PM Air.",
+        "action": "Tuer ou au minimum frapper chaque Armécréante (évite Iopprimé) et pesanteur si besoin contre Tyrannie. Préparer Insoignable et poisons avant 1 PV."
+      },
+      {
+        "label": "Palier 3 (Seuil 1 PV : Rollback)",
+        "hpPct": 1,
+        "nextPct": 0,
+        "state": "Phase 3 (Rollback + Soin 25%)",
+        "spellFilter": "HS=1525",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 1 PV, rollback toutes les entités à leur case de départ et se soigne de 25% de ses PV max.",
+        "action": "Avec Insoignable + poison posés juste avant 1 PV, Servitude meurt dès son tour ; sinon rechargez Traître pour finir."
+      }
+    ]
+  },
+  "misere": {
+    "invul": "Invulnérable Tour 1. À 50% PV, monte sur son vautour et redevient invulnérable 1 tour (jusqu’au tour du joueur qui passe le seuil).",
+    "danger": "Attraction Vénale attire toute la map à son début de tour et par ligne de dégâts reçue (1 à 4 cases selon le palier PV). Balance-Fléau vole 200 Puissance (infini).",
+    "control": "Retrait PM / Pesanteur crucial dès le Palier 3 (gagne +4 PM et Intaclable sur son vautour). Coupez la LdV avec ses monstres sous Collecte et tapez en grosses mono-lignes. Si un allié subit Dakhma (-100 PA/PM, invulnérable 1t), faites-le taper par un allié (ex. Flamiche) pour purger Dakhma et lui rendre ses PA/PM.",
+    "tip": "Attention à l’ordre d’initiative au passage des 50% PV et gardez vos distances sous 25% PV (attirance de 4 cases + Coopération 8 PO sans LdV tous les 3t).",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 75% PV)",
+        "hpPct": 100,
+        "nextPct": 75,
+        "state": "Phase 1 à pied (Attraction 1)",
+        "spellFilter": "HS!1563",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Invulnérable T1. Attraction Vénale attire de 1 case au début de son tour et par coup reçu. Dakhma retire 100 PA/PM, rend invulnérable 1t et TP début de tour.",
+        "action": "Temporiser T1, couper la LdV de Collecte, clean les monstres et privilégier de grosses attaques mono-lignes. Si un allié subit Dakhma (-100 PA/PM, invulnérable 1t), faites-le taper par un allié (ex. Flamiche) pour purger Dakhma et lui rendre ses PA/PM."
+      },
+      {
+        "label": "Palier 2 (75% - 50% PV)",
+        "hpPct": 75,
+        "nextPct": 50,
+        "state": "Phase 1 à pied (Attraction 2)",
+        "spellFilter": "HS!1563",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Toujours au sol mais Attraction Vénale passe à 2 cases d’attirance par début de tour et par ligne de dégâts reçue.",
+        "action": "Rester à distance avant le seuil des 50% PV et caler l’ordre d’initiative pour passer le seuil sans gâcher de dégâts sur son tour d’invulnérabilité."
+      },
+      {
+        "label": "Palier 3 (50% - 25% PV)",
+        "hpPct": 50,
+        "nextPct": 25,
+        "state": "Phase 2 sur vautour / Intaclable",
+        "spellFilter": "HS=1563",
+        "buffs": {
+          "pm": 4,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Monte sur son vautour à 50% PV : invulnérable 1t, gagne +4 PM (10 PM), état Intaclable et Coopération 8 PO sans LdV (3t). Attraction Vénale = 3 cases.",
+        "action": "Attendre la fin de son invulnérabilité, la bloquer au retrait PM ou Pesanteur (Intaclable) et éviter la zone Balance-Fléau (-200 Puissance)."
+      },
+      {
+        "label": "Palier 4 (25% - 0% PV)",
+        "hpPct": 25,
+        "nextPct": 0,
+        "state": "Phase 2 sur vautour (Attraction 4)",
+        "spellFilter": "HS=1563",
+        "buffs": {
+          "pm": 4,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Toujours sur vautour (+4 PM, Intaclable), mais Attraction Vénale attire désormais de 4 cases au début de son tour et à chaque ligne de dégâts reçue.",
+        "action": "Achever en grosses mono-lignes pour éviter d’attirer toute l’équipe à son CàC tout en maintenant le retrait PM."
+      }
+    ]
+  },
+  "guerre": {
+    "invul": "Invulnérable et indéplaçable tant que ses compagnons sont vivants. Une fois seule, applique Brave (2t indébuffable) à 1 joueur : seul lui peut multi-taper Guerre.",
+    "danger": "En Phase 2 (Brave), Guerre gagne +2 PM, +200 Tacle et +200 Fuite. Tous les 20% PV perdus (80/60/40/20%), elle invoque une arme géante à 2 PO qui la booste si elle reste en vie.",
+    "control": "Nettoyez d’abord tous les monstres. Le joueur Brave DPS en priorité (autres = 1 ligne max). Tuez chaque arme invoquée avant le tour de Guerre.",
+    "tip": "Avec 240 Tacle (et plus en phase Brave), fuir au détacle demande près de 500 Fuite : prévoyez des sorts de TP plutôt que de la Fuite.",
+    "paliers": [
+      {
+        "label": "Phase 1 (Monstres en vie)",
+        "hpPct": 100,
+        "nextPct": 100,
+        "state": "Guerre Phase 1 (Invulnérable)",
+        "spellFilter": "HS=1568",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Invulnérable et indéplaçable tant qu’un autre monstre est vivant. Passe en Phase 2 dès la mort du dernier compagnon.",
+        "action": "Éliminer tous les monstres de la salle en gardant Guerre à distance ou derrière un tank."
+      },
+      {
+        "label": "Palier 1 (80% - 60% PV : Épée)",
+        "hpPct": 80,
+        "nextPct": 60,
+        "state": "Brave + Épée Géante (-20% PV)",
+        "spellFilter": "HS=1569",
+        "buffs": {
+          "pm": 4,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 200,
+          "fui": 300
+        },
+        "mech": "Brave donne +2 PM, +200 Tacle et +200 Fuite à Guerre. À 80% PV, invoque l’Épée Géante à 2 PO (Feu étoile 5 ; si en vie : +2 PM et +100 Fuite bonus).",
+        "action": "Tuer l’Épée avant le tour de Guerre (ou retirer ses PM) et burst avec le joueur Brave."
+      },
+      {
+        "label": "Palier 2 (60% - 40% PV : Marteau)",
+        "hpPct": 60,
+        "nextPct": 40,
+        "state": "Brave + Marteau Géant (-40% PV)",
+        "spellFilter": "HS=1569",
+        "buffs": {
+          "pm": 2,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 300,
+          "fui": 200
+        },
+        "mech": "À 60% PV, invoque le Marteau Géant à 2 PO (Terre cercle 3 ; si en vie au début du tour de Guerre : +10% dommages finaux et +100 Tacle bonus).",
+        "action": "Éliminer le Marteau avant le tour de Guerre pour bloquer le +10% dmg finaux et le +100 Tacle (utilisez des TP si taclés)."
+      },
+      {
+        "label": "Palier 3 (40% - 20% PV : Hache)",
+        "hpPct": 40,
+        "nextPct": 20,
+        "state": "Brave + Hache Géante (-60% PV)",
+        "spellFilter": "HS=1569",
+        "buffs": {
+          "pm": 2,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 200,
+          "fui": 200
+        },
+        "mech": "À 40% PV, invoque la Hache Géante à 2 PO (Air 4 triangles ; si en vie : +10% Résistances et 1000 bouclier sur Guerre).",
+        "action": "Détruire la Hache avant le tour de Guerre pour empêcher le gain de 10% Résistances et des 1000 PB."
+      },
+      {
+        "label": "Palier 4 (20% - 0% PV : Morgenstern)",
+        "hpPct": 20,
+        "nextPct": 0,
+        "state": "Brave + Morgenstern (-80% PV)",
+        "spellFilter": "HS=1569",
+        "buffs": {
+          "pm": 2,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 200,
+          "fui": 200
+        },
+        "mech": "À 20% PV, invoque le Morgenstern Géant à 2 PO (grille 5 ; si en vie : +3 PA et soin de 5% des PV max sur Guerre).",
+        "action": "Tuer le Morgenstern avant le tour de Guerre ou achever Guerre directement sous 20% PV."
+      }
+    ]
+  },
+  "yech'ti": {
+    "invul": "Invulnérable au départ. Il doit tuer un adversaire (invocation, compagnon ou joueur) au CaC pour perdre son invulnérabilité jusqu'à son prochain tour.",
+    "danger": "One-shot au corps-à-corps via Goulaf' et lourds dégâts de zone Eau/Neutre (bond + 17 PA / 6 PM).",
+    "control": "Tenez vos personnages à distance via retrait PM/PO et sacrifiez une invocation à son CaC pour le délock.",
+    "tip": "Prévoyez des invocations sacrifiables (attention à son état Enraciné une fois vulnérable)."
+  },
+  "glourdorak": {
+    "invul": "Invulnérable. À partir du T2, lance « Fonso Cacnoob » (3–6 PO) sur un joueur aléatoire : ce joueur doit finir son tour au CaC du Glourdorak pour le délock.",
+    "danger": "Lourds dégâts en mêlée et contrainte de placement stricte imposée par Fonso Cacnoob.",
+    "control": "Gardez un placeur ou de la mobilité pour ramener uniquement le porteur de « Fonso Cacnoob » au CaC en fin de tour.",
+    "tip": "Attention à bien terminer le tour du joueur ciblé collé au Glourdorak."
+  },
+  "mekamouth": {
+    "invul": "Invulnérable via son sort Potentiomètre. Il doit finir son tour sur son glyphe bleu en croix (Surtension) pour devenir vulnérable pendant 1 tour.",
+    "danger": "Contrôle de terrain et dégâts mécaniques si les placements autour des glyphes sont ratés.",
+    "control": "Placez-le ou dosez le retrait PM pour qu'il termine obligatoirement son tour sur son glyphe bleu.",
+    "tip": "Gardez la case du glyphe bleu accessible pour y poser ou pousser Mekamouth."
+  },
+  "dremoan": {
+    "invul": "Invulnérable jusqu'à l'apparition de sa première graine : tuez un des monstres qui l'accompagnent pour qu'il le ressuscite en zombie et lève son invulnérabilité.",
+    "danger": "Poison du Germe sur les PA dépensés, lourds dégâts à sa mort autour de lui et boosts cumulatifs.",
+    "control": "Éliminez vite un monstre d'accompagnement et achevez Dremoan à distance pour éviter son explosion finale.",
+    "tip": "Surveillez vos dépenses de PA sous l'effet du Germe de Dremoan."
+  },
+  "chevalier de glace": {
+    "invul": "Vulnérable au départ, mais le moindre retrait PA/PM ou la moindre poussée le rend immédiatement invulnérable pendant 2 tours.",
+    "danger": "Dommages de poussée mortels (OS) et gros dégâts/tacle au CaC.",
+    "control": "Zéro retrait PA/PM et zéro poussée sur lui (attention aux compagnons et sorts automatiques).",
+    "tip": "Frappez à distance en dégâts directs et ne restez pas dos à un mur."
+  },
+  "docteur eggob": {
+    "invul": "Pas d'invulnérabilité permanente : tuez rapidement ses invocations et soutiens (notamment l'Œuf de la Mort) pour lui retirer ses buffs et empêcher ses mécaniques de soin/protection.",
+    "danger": "Glyphes/pièges dangereux au sol et Œuf de la Mort pouvant one-shot.",
+    "control": "Évitez ses zones piégées, focus ses invocations dès qu'elles sortent et burst le boss.",
+    "tip": "Ne laissez jamais ses invocations s'accumuler."
+  },
+  "torkelonia": {
+    "invul": "Le Lunorbe pose un glyphe bleu tournant d'1 case/tour. Se placer dedans et infliger des dégâts pour délock (rester dedans pendant l'attaque). Taper le Lunorbe fait avancer le glyphe.",
+    "danger": "Tuer Torkélonia OS le tueur sauf en Nouvelle Lune (ou via invocation). Tuer un monstre en Nouvelle/Pleine Lune soigne à 100% et rend invulnérable 1 tour. Tour complet du glyphe = -1 PA/-1 PM infini.",
+    "control": "Tuer les sbires d'abord (Alashasss pour stopper les soins) hors Nouvelle/Pleine Lune ; chaque kill donne définitivement son bonus lunaire aux survivants. Panda tank ou retrait PA/PM utile.",
+    "tip": "Achevez Torkélonia pendant la phase Nouvelle Lune (ou avec une invocation sacrifiée) pour éviter l'OS de fin."
+  },
+  "barberyl clochecuivre": {
+    "invul": "Pas d'état Invulnérable. Le 1er allié blessé dans le tour reçoit l'état Clochecuivre : Barbéryl échange avec lui au tour suivant (-100 PM, 1 tour), sauf si on la tape au CàC pour le retirer.",
+    "danger": "La Nimpatience monte (+1 par ligne de dégâts infligée par un monstre, max 2/tour) : à III (1x) et V (1x/tour), ils débloquent un sort dévastateur. Échange Clochecuivre + -100 PM piège vos placements.",
+    "control": "Barbéryl gagne +20% rés (2t) à chaque déplacement. Maintenez-la en Pesanteur + retrait PM pour bloquer ses échanges et son bond, et tuez vite les Nimbos.",
+    "tip": "Un coup au CàC sur Barbéryl (une invocation suffit) empêche l’échange ; Pesanteur, Enraciné ou Indéplaçable sur elle ou la cible aussi."
+  },
+  "gein": {
+    "invul": "Invisible et invulnérable de base. Invoquez (l'invoc meurt et devient un Feu des âmes perdues), puis tapez un Feu situé à ≤ 2 cases de Gein pour le révéler et le délock pour votre tour.",
+    "danger": "Wipe/OS automatique de toute l'équipe au tour 11. Poisons Air (PA) et Feu (PM), frappe Terre sur vie érodée, et zone Feu attirance/échange de place à 4 PO (évitable avec Pesanteur).",
+    "control": "Posez plusieurs Feux des âmes perdues via invocations peu coûteuses et sondez avec Flamiche (si le Feu s'allume en bleu, Gein est en mêlée). Pesanteur empêche son échange de place.",
+    "tip": "Multipliez les petites invocations + Flamiche pour repérer Gein vite et le burst avant le tour 11."
+  },
+  "mouchame": {
+    "invul": "Pas d'état Invulnérable. Invoque 7 doubles au T1 ; toutes les Mouchâmes partagent leurs dégâts pour tout le combat.",
+    "danger": "Au-dessus de 50% PV, chaque ligne de dégâts directe les booste de +50 Puissance (infini). Sous 50% PV, elles lancent Herd qui OS les cibles au bout de 3 tours. Vol de vie Eau au CàC.",
+    "control": "Jouez à distance et utilisez des sorts de zone (AoE) pour multiplier les dégâts partagés. Limitez les petites multi-lignes au-dessus de 50% PV et entravez les PM.",
+    "tip": "Frappez en zone à distance avec de grosses lignes pour descendre vite sous 50% et finir en moins de 3 tours après Herd.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 50% PV)",
+        "hpPct": 100,
+        "nextPct": 50,
+        "state": "+50 Puissance / ligne de dégâts",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Invoque 7 doubles au T1 avec partage de dégâts. Au-dessus de 50% PV, chaque ligne de dégâts directe booste les Mouchâmes de +50 Puissance (infini).",
+        "action": "Jouer à distance avec de grosses frappes AoE mono-lignes (éviter les multi-lignes légers) et entraver les PM."
+      },
+      {
+        "label": "Palier 2 (≤ 50% PV : Sort Herd)",
+        "hpPct": 50,
+        "nextPct": 0,
+        "state": "Herd actif (OS au bout de 3 tours)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Sous 50% PV : elles cessent les boosts de Puissance sur coup mais lancent Herd, tuant instantanément (OS) les cibles au bout de 3 tours.",
+        "action": "Burst maximal en zone à distance pour terminer le combat en moins de 3 tours après le lancement de Herd."
+      }
+    ]
+  },
+  "panteroz": {
+    "invul": "Pas d'état Invulnérable strict, mais réduction fixe massive (666) des dégâts à distance : il est obligatoire de la frapper en mêlée (CàC).",
+    "danger": "Début de tour : pose Silencieux (1t, bloque sorts et armes) dans un rayon de 2 cases autour d'elle et OS les invocations dans cette zone. Gros dégâts Terre CàC + zone Feu (cercle 2) sur érosion.",
+    "control": "Venez taper au CàC puis sortez à ≥ 3 cases avant la fin du tour. Évitez de coller des invocations près d'elle et ne regroupez pas vos alliés. Un désenvoûtement sauve d'un Silencieux.",
+    "tip": "Hit & run au CàC : frappez en mêlée puis reculez à 3+ cases pour éviter l'état Silencieux."
+  },
+  "buldalazred": {
+    "invul": "Pas d'état Invulnérable : vulnérable dès le T1.",
+    "danger": "Pose chaque tour un glyphe noir invisible (rayon 2-3) qui OS quiconque commence ou finit son tour dedans. Ses pièges (1 case) attirent toute l'équipe de 3 cases, révèlent le glyphe et lui donnent +100 Puissance infini.",
+    "control": "Attire de 3 cases en LdV au début de son tour et retire 3 PM (Feu). Utilisez Stabilisation/Enraciné/Inébranlable ou Gravitationnel pour annuler pièges et attirances.",
+    "tip": "Focus et burst rapide dès le T1 sous état Indéplaçable/Enraciné, sans jamais finir sur ses cases de début de tour."
+  },
+  "culbutœuf": {
+    "invul": "Pas d'état Invulnérable strict, mais réduit tous les dégâts reçus en mêlée de 2200 : il faut impérativement le frapper à distance.",
+    "danger": "Sort « Du fond du cœur » en croix 1 autour de lui : -10 PM, -200 Puissance et 40% d'érosion. Frappe Terre/Feu à portée et applique parfois Pesanteur + poison PA.",
+    "control": "État Inébranlable global (poussées/attirances bloquées, seul le porter/jeter du Pandawa fonctionne). Gardez vos alliés hors de sa mêlée et retirez-lui ses PM.",
+    "tip": "Tapez exclusivement à distance, gardez les cases adjacentes vides et désenvoûtez vite « Du fond du cœur »."
+  },
+  "fou": {
+    "invul": "Pas d'invulnérabilité fixe, mais combat en trio partagé (Chi = Pierre, Fou = Ciseaux, Mi = Feuille). Chaque tour vous recevez un état Chifoumi et devez taper l'entité que votre état bat.",
+    "danger": "Taper la mauvaise entité applique de lourds malus (état Pacifiste, boosts ennemis ou renvois). Vérifiez l'icône au-dessus de votre perso et de chaque cible à chaque tour.",
+    "control": "Combat jouable à distance ; entrave PM et placement (Roublard, Enutrof, etc.) facilitent le ciblage propre sans déclencher de mauvais effets.",
+    "tip": "Respectez Pierre > Fou (Ciseaux) > Mi (Feuille) > Chi (Pierre) selon votre icône du tour avant chaque attaque."
+  },
+  "ganos": {
+    "invul": "Pas d'invulnérabilité. Seuils à 70% et 30% PV : change d'état selon la rotation Naissance > Chasse > Repos (début = saison active d'Osavora), modifiant sorts, éléments et effets.",
+    "danger": "Cumule jusqu'à 10x dommages finaux, PM, tacle, fuite et vitalité chaque tour. Repousse le joueur le plus proche de 20 cases/tour ; tape Eau/Terre/Air (vol de vie, dégâts sur déplacement en Chasse).",
+    "control": "Gros placement requis contre la poussée de 20 cases et les dégâts sur déplacement. Anticipez les seuils 70%/30% avec du burst et gérez les monstres autour (Alliés de circonstance réduit sa vita/pui).",
+    "tip": "Ne faites pas traîner le combat à cause de ses boosts cumulables ; gardez des sorts de replacement/coop et burst aux seuils 70% et 30% PV.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 70% PV)",
+        "hpPct": 100,
+        "nextPct": 70,
+        "state": "Saison active (Rotation 1)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Démarre selon la saison active d’Osavora. Cumule jusqu’à 10x dommages finaux, PM, tacle, fuite et vitalité au fil des tours ; repousse le plus proche de 20 cases.",
+        "action": "Tuer vite ou gérer les monstres autour et descendre Ganos vers le seuil des 70% PV sans faire traîner."
+      },
+      {
+        "label": "Palier 2 (70% - 30% PV)",
+        "hpPct": 70,
+        "nextPct": 30,
+        "state": "Rotation 2 (Naissance > Chasse > Repos)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 70% PV : change d’état selon la rotation Naissance > Chasse > Repos, modifiant ses sorts, éléments et effets (dégâts sur déplacement en Chasse).",
+        "action": "Adapter le placement/téléportations face à la poussée 20 cases et continuer le burst vers 30% PV."
+      },
+      {
+        "label": "Palier 3 (30% - 0% PV)",
+        "hpPct": 30,
+        "nextPct": 0,
+        "state": "Rotation 3 (Dernière saison)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 30% PV : dernier changement d’état de la rotation Naissance > Chasse > Repos avec cumuls de boosts importants.",
+        "action": "Achever rapidement Ganos en utilisant coop/repositionnement contre la poussée de 20 cases."
+      }
+    ]
+  },
+  "grand kongoku": {
+    "invul": "Pas d'invulnérabilité. T1, il invoque une Cocolune fixe/indéplaçable : tant qu'elle vit, il a l'état Super Singe (+vitalité, +puissance et effets bonus).",
+    "danger": "La Cocolune attire de 10 cases en ligne et met l'état Pacifiste aux joueurs dans sa LdV. Le Kongoku se TP partout (hors Pesanteur) et tape fort Neutre au CaC (repousse) et en zone ligne.",
+    "control": "Ne commencez jamais en LdV de la Cocolune. Entourez/bloquez la Cocolune d'invocations pour couper ses LdV, ou jouez hors LdV. Mettez Pesanteur sur le Kongoku pour bloquer sa TP.",
+    "tip": "Focus le Grand Kongoku directement en restant hors ligne de vue de la Cocolune (ou en l'obstruant avec des invocations) et sans vous aligner."
+  },
+  "homard medali": {
+    "invul": "Pas d'invulnérable au départ, mais s'il touche une cible (joueur ou invoc) avec Télépunch (2-5 PO), il gagne Invulnérable infini. Frappez-le au CaC (sort ou arme) pour le délock.",
+    "danger": "Gagne de la puissance infinie chaque début de tour. Télépunch (vol de vie Air + TP/coop) le rend invulnérable s'il touche, et ses attaques repoussent/retirent des PM.",
+    "control": "Évitez de rester à 2-5 PO de lui ou gardez un tapeur mobile pour aller au CaC dès qu'il proc Invulnérable. Ne placez pas d'invocations à portée de Télépunch.",
+    "tip": "Si Télépunch déclenche son état Invulnérable, un simple coup au corps à corps le retire aussitôt ; tuez-le vite avant qu'il ne stack trop de puissance."
+  },
+  "hyperscampe": {
+    "invul": "Invulnérable infini (Hostilité). Début de tour, il pose 3 glyphes bleus (Riveteuse) : 3 joueurs (2 si un allié est mort) doivent finir leur tour dessus pour le rendre vulnérable 1 tour.",
+    "danger": "Évitez absolument l'état Pesanteur sur l'Hyperscampe : il ne pose plus ses glyphes et récupère aussitôt son Invulnérable infini. Combat limité en tours (time-out autour du T11).",
+    "control": "Engagez au centre d'une map dégagée pour que les glyphes restent accessibles. Les Compagnons peuvent valider les glyphes. Jamais de glyphe gravitationnel ni de Pesanteur sur le boss.",
+    "tip": "Placez 3 persos (ou compagnons) sur les glyphes bleus puis burst dès qu'il est vulnérable, sans jamais lui appliquer Pesanteur."
+  },
+  "khepricorne": {
+    "invul": "Invulnérable au début. Frappez-le une fois (même à 0 dégâts) : au début de son tour suivant, il devient vulnérable 3 tours et invoque une Boule Puante.",
+    "danger": "Si Khepricorne et la Boule Puante sont à >10 PO l'un de l'autre, toute l'équipe subit de lourds dégâts Feu (~750). À la fin des 3 tours, la Boule explose en zone Feu (cercle 2). Malus PA/PO à >6 PO.",
+    "control": "Vulnérable, il est intaclable, réduit les dégâts, gagne PM/fuite et repousse d'1 case au CaC. Gardez la Boule à ≤10 PO de lui, placez-vous à ≤6 PO et écartez-vous de la Boule avant T3.",
+    "tip": "Déclenchez la vulnérabilité avec un coup (même à 0) quand vos boosts sont prêts, gardez la Boule Puante proche de lui et fuyez la Boule avant son explosion."
+  },
+  "le fantome braideur": {
+    "invul": "Pas d'invulnérable mais -75% dommages subis à distance et Pesanteur permanente pour tous. À 50% PV, invoque 3 copies d'elle-même (réinvoquées aussitôt si tuées).",
+    "danger": "Intaclable, repousse d'1 case qui finit à son CaC. Sorts jusqu'à 12 PO : ligne Feu qui repousse de 6 cases, zone cercle 2 Terre/Eau (-4 PM) et désenvoûtement Terre tous les 3 tours.",
+    "control": "Jouez en mêlée pour contourner les -75% distance. Ne vous alignez jamais (poussée 6 cases) et espacez-vous (retrait 4 PM en zone). Ignorez les copies à 50% PV et focus le vrai boss.",
+    "tip": "Préparez vos gros bursts juste avant les 50% PV pour tomber le vrai Fantôme Braïdeur rapidement au CaC sans perdre de PA sur les copies.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 50% PV)",
+        "hpPct": 100,
+        "nextPct": 50,
+        "state": "Seule (-75% distance + Pesanteur)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "-75% dommages subis à distance et Pesanteur permanente pour tous. Intaclable, repousse d’1 case qui finit à son CàC ; ligne Feu pousse 6 cases.",
+        "action": "Jouer en mêlée sans se coller aux alignements (poussée 6 cases) ni se packer (zone -4 PM), et charger ses bursts avant 50% PV."
+      },
+      {
+        "label": "Palier 2 (≤ 50% PV : 3 Copies)",
+        "hpPct": 50,
+        "nextPct": 0,
+        "state": "Seuil 50% : Invoque 3 copies",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "À 50% PV : invoque 3 copies d’elle-même (immédiatement réinvoquées si vous les tuez).",
+        "action": "Ignorer totalement les 3 copies et focus + burst le vrai Fantôme Braïdeur en mêlée."
+      }
+    ]
+  },
+  "psikopompe": {
+    "invul": "Invulnérable infini. Il faut lui faire une tentative de retrait PM (réussie ou non selon le sort) pour retirer son Invulnérable pendant 1 tour.",
+    "danger": "Sort Sentence en zone croix : toute cible soignée dans les 2 tours est OS. Subir un retrait PA déclenche un renvoi de dégâts. Finir/commencer au CaC d'un allié ou du boss inflige de lourds dégâts.",
+    "control": "Aucune téléportation ni poussée : bloquez-le dans un coin avec des invocations (ex: Cuirboule). Ne vous collez pas entre alliés. Vulnérable, ses sorts passent en PO infinie.",
+    "tip": "Prenez un Enutrof/retrait PM, ne faites jamais de retrait PA ni de soin sur les cibles de Sentence, et bloquez le boss derrière des invocations."
+  },
+  "sicogne": {
+    "invul": "Pas d'invulnérabilité. Mécanique centrale : rater un détacle face à Sicogne OS le joueur. De plus, le déplacer (poussée, attirance, TP, coop) termine instantanément votre tour.",
+    "danger": "OS sur échec de fuite au tacle (il se booste tacle et retire de la fuite). OS les invocations proches. Pose des glyphes sous ses alliés : marcher dessus échange de place et le booste.",
+    "control": "Restez à distance ou ayez un sort de TP/libération fiable à 100% sans jet de fuite. Évitez ses glyphes. Si vous devez le déplacer, faites-le en toute dernière action du tour.",
+    "tip": "Ne tentez jamais de détacler Sicogne à pied : gardez vos distances, ignorez les invocations au CaC et placez tout déplacement sur lui en fin de tour."
+  },
+  "takomako": {
+    "invul": "Devient Invulnérable (1 tour) en début de tour si aucun allié (perso ou invoc) n'est à 5 cases ou moins de lui. Gardez une unité à ≤ 5 PO en permanence.",
+    "danger": "Gagne +1 PM cumulable par tour ; moins il dépense de PM avant d'attaquer, plus ses dégâts Neutre (10 PO sans LDV) sont élevés. Pose Pacifiste et Insoignable (1 tour, jusqu'à 2 cibles).",
+    "control": "Tuez d'abord les monstres annexes, puis placez un tank (ou invoc solide) à ≤ 5 cases. Protégez-le via boucliers/réductions car il sera souvent Insoignable et Pacifiste.",
+    "tip": "Les DPS restent loin et burstent rapidement : le combat s'accélère vite à cause de son gain infini de PM et des tours Pacifiste."
+  },
+  "voldelor": {
+    "invul": "Pas d'invulnérabilité. Le 1er attaquant du tour reçoit l'état « Marque des Mangelors » (1 tour). Voldelor ressuscite aussi le dernier monstre allié mort tous les 3 tours.",
+    "danger": "En zone cercle 3 au CàC, son sort Feu vol de vie tue instantanément (OS) le porteur de la « Marque des Mangelors » s'il est touché. Lourds dégâts de zone en mêlée.",
+    "control": "Focus Voldelor en priorité pour éviter les résurrections. Ne vous regroupez pas en mêlée et évitez qu'une recrue/invoc frappe en premier sans pouvoir fuir.",
+    "tip": "Faites taper un perso mobile en 1er puis fuyez hors de portée, ou faites-le porter par un Pandawa avant le tour de Voldelor (porté, il ne peut être OS)."
+  },
+  "flasho": {
+    "invul": "Pas d'invulnérabilité, mais esquive 100 % des dégâts d'arme en reculant d'1 case. Gagne des PM si poussé ou ralenti PM, et des dommages si ralenti PA.",
+    "danger": "Au tour 6 : tue toutes les invocations, renvoie tous les joueurs sur leur case de départ, désenvoûte, retire 4 PA et soigne ses alliés (20 000 PV Feu). Possède 20 PM de base.",
+    "control": "Ne jouez ni retrait PA/PM ni poussée. Nettoyez les mobs avant le T6 pour annuler son gros soin, et placez-vous prudemment dès la préparation (retour case départ au T6).",
+    "tip": "Tapez uniquement avec des sorts à distance (jamais d'arme) et anticipez le repositionnement du tour 6 pour ne pas vous retrouver encerclé."
+  },
+  "predagob": {
+    "invul": "Pas d'invulnérabilité, mais redevient Invisible au début de chacun de ses tours. Le moindre dégât subi le révèle jusqu'à son prochain tour. Dispose de 10 PM sans sort de Bond.",
+    "danger": "Si un joueur termine son tour adjacent (au CàC) à Predagob tant qu'il est invisible, il est tué instantanément (OS). En début de tour, il tue ses invocs adjacentes et pousse en croix.",
+    "control": "Comptez ses PM depuis sa dernière cible pour estimer sa position, puis révélez-le avec des sorts de zone. Glyphe gravita (Féca) et obstacles statiques (Cawotte) aident à le bloquer.",
+    "tip": "Ne finissez jamais votre tour au CàC à l'aveugle : si vous ne l'avez pas révélé aux sorts de zone, éloignez toute l'équipe des cases probables."
+  },
+  "sans visage": {
+    "invul": "Invisible à chaque tour ; ses invocations Bak sont Invulnérables à distance (tuables au CàC). Chaque perso doit toucher le Sans Visage à chaque tour, sinon il gagne énormément de vitalité.",
+    "danger": "S'il n'est pas frappé, il se booste massivement en PV et son sort Rage Avide se renforce jusqu'à OS (notamment sur glyphe Bak). Très dangereux au CàC ; ses attaques de base ont ~2 PO.",
+    "control": "Gardez-le à distance (retrait PM, placement) et nettoyez les Bak au CàC si elles bloquent les LDV/glyphes. Jouez avec de l'érosion pour contrer sa forte régénération.",
+    "tip": "Assurez-vous avec des sorts de zone que TOUS les personnages lui infligent au moins 1 dégât chaque tour pour bloquer son boost PV et l'OS."
+  },
+  "viti glourson": {
+    "invul": "Pas d'invulnérabilité, mais gagne +30 % de résistance (2 tours, non esquivable) dans chaque élément où il subit une attaque. Chaque désenvoûtement lui retire 30 % de résistance.",
+    "danger": "Si vous lui retirez des PA, il gagne un renvoi de dommages pendant 3 tours. Ses attaques au CàC frappent fort avec érosion, et il soigne/booste PA-PM ses alliés.",
+    "control": "Interdiction absolue de retirer des PA. Évitez les attaques multi-lignes qui saturent ses résistances : préférez de gros sorts monocoup, des éléments variés et de l'érosion.",
+    "tip": "Placez un désenvoûtement juste avant votre tour de gros burst, ou rongez ses PV max à l'érosion s'il accumule trop de résistances."
+  },
+  "carter le pillard": {
+    "invul": "Invulnérable à distance : il faut le frapper en mêlée. Statique (0 PM, indéplaçable). S'il pose son glyphe marron sur un ennemi (sacrifice), frapper ce dernier transfère les dégâts à Carter.",
+    "danger": "Pose T1 un glyphe autour de lui qui grandit d'1 case/tour (malus cumulables Puissance, Résistances, PO). Son glyphe bleu inflige des dégâts Eau et fait passer le tour si on finit dedans.",
+    "control": "Ne finissez jamais dans le glyphe bleu et évitez le centre du glyphe marron. Utilisez le transfert de dégâts sur les mobs marqués d'origine, ou foncez en mêlée pour le burst vite.",
+    "tip": "Tombez-le rapidement avant que son glyphe central grandissant ne devienne ingérable ; décaler un mob manuellement sur un glyphe ne transfère pas les dégâts."
+  },
+  "guerrier du k.o.": {
+    "invul": "Pas d'invulnérabilité, mais applique l'état infini « Étoile du matin » à tous les monstres : attaquer un monstre tue (OS) toute unité alliée située en ligne ou en diagonale de la cible.",
+    "danger": "« Étoile du matin » (OS en ligne/diagonale dès qu'on frappe, poisons inclus), « Massacre à retardement » (OS la cible si elle subit un dégât) et « Carnageddon » (croix infinie, OS sous 50 % PV).",
+    "control": "Ne frappez jamais en étant aligné/diagonale avec un monstre (vérifiez aussi vos alliés/invocs). Isolez la cible de Massacre à retardement et gardez tout le monde > 50 % PV.",
+    "tip": "Focus le Guerrier du K.O. en premier avec un Pandawa pour le placer en décalé, et évitez les poisons qui peuvent déclencher l'OS en fin de tour."
+  },
+  "shushu debruk'sayl": {
+    "invul": "Invulnérable dès T1 (11 PA de base, Siphonage élémentaire). Au début de son tour, vole 3 PA par entité dans un cercle de 3 cases. À 16+ PA, lance Assimilation d'énergies et perd l'invulnérabilité pour 2 tours.",
+    "danger": "S'il atteint 20 PA ou plus, il lance Mue démoniaque : soin à 100% PV, gros boosts et téléportation, ruinant tout le combat.",
+    "control": "Placez exactement 2 alliés ou invocations à <= 3 cases avant son tour pour lui faire atteindre 17 PA (11+6) sans dépasser 19 PA.",
+    "tip": "Dosez vos invocations près de lui : 2 entités suffisent pour le délock (16-19 PA), mais 3+ le font monter à 20+ PA et full heal."
+  },
+  "crasper": {
+    "invul": "Pas d'invulnérabilité, mais énorme réduction de dégâts sur les armes (quasi nulles) : attaquez-le uniquement aux sorts.",
+    "danger": "Pose un poison Terre en cercle (dégâts par PA/PM utilisés) + érosion + état Hanté. Sous Hanté, retire PO et minimise vos jets aléatoires. Met Pacifiste et retire Fuite.",
+    "control": "Échange sa position avec un joueur en fin de tour : ne misez pas sur un placement fixe. Tuez ses alliés d'abord s'il est accompagné.",
+    "tip": "Limitez les PA/PM dépensés sous son poison Terre et n'utilisez aucun corps-à-corps d'arme (sorts exclusivement)."
+  },
+  "hin": {
+    "invul": "Pas d'invulnérabilité, mais le sort Distanss (1 tour/3, débuffable) le fait reculer de 3 cases et gagner +1 PM par ligne de dégâts reçue.",
+    "danger": "Tétroloin (passif) : poison Terre infini (5 dégâts/PM utilisé) et OS dès le tour 2 tout joueur à 10 PO ou plus en début de tour. Repousse aussi.",
+    "control": "Foncez dans un rayon < 10 cases dès le T1 et maintenez-le au CàC ou à courte portée (<= 9 PO). Attention aux poussées combinées.",
+    "tip": "Débuffez Distanss ou tapez en mono-ligne pour éviter qu'il ne recule et ne vous repousse à >= 10 PO (OS garanti)."
+  },
+  "ka'youloud": {
+    "invul": "Pas d'invulnérabilité, mais change de phase selon sa vie (Triple œil >=70% PV, Double œil, Monocle). Mâche Ouille lui donne 25-50% rési même dans le vide.",
+    "danger": "Lourds dégâts CàC en zone + vol de vie (Mâche Ouille), gros soins en Double œil, téléportations (Pas-sage), malus rési (Déjection) et retrait PM/PA/PO.",
+    "control": "Gros retrait PA (50 esquive PA seulement : 2 PA/tour = quasi inoffensif), entrave PM et Pesanteur pour bloquer ses TP.",
+    "tip": "Venez avec du retrait PA massif (Xélor/Féca), de l'érosion et du débuff pour contrer ses énormes résistances et soins.",
+    "paliers": [
+      {
+        "label": "Palier 1 (100% - 70% : Triple œil)",
+        "hpPct": 100,
+        "nextPct": 70,
+        "state": "Triple œil",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Phase d’ouverture à ≥70% PV. Mâche Ouille lui donne 25–50% rési même dans le vide ; frappes zone CàC + vol de vie et TP Pas-sage.",
+        "action": "Poser Pesanteur (bloque la TP), retrait PA massif (50 Esq. PA) et érosion pour descendre sous 70%."
+      },
+      {
+        "label": "Palier 2 (70% - 30% : Double œil)",
+        "hpPct": 70,
+        "nextPct": 30,
+        "state": "Double œil (Gros soins)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Entre 70% et 30% PV : passe en Double œil avec de gros soins qui compensent vos dégâts sans érosion ni débuff.",
+        "action": "Maintenir l’érosion, débuffer ses soins/résistances et continuer l’entrave PA."
+      },
+      {
+        "label": "Palier 3 (< 30% PV : Monocle)",
+        "hpPct": 30,
+        "nextPct": 0,
+        "state": "Monocle (Phase finale)",
+        "buffs": {
+          "pm": 0,
+          "pow": 0,
+          "dmg": 0,
+          "tac": 0,
+          "fui": 0
+        },
+        "mech": "Sous 30% PV : passe en état Monocle pour le finish.",
+        "action": "Burst final avec retrait PA/PM maintenu pour l’achever avant qu’il ne remonte."
+      }
+    ]
+  },
+  "anatak diskedor": {
+    "invul": "Pas d'invulnérabilité. S'applique cycliquement l'état Bretteur Céleste tous les 4 tours (tours 3, 7, 11...) pendant 1 tour.",
+    "danger": "OS toute cible au CàC ayant l'état Foudroyé (posé par Coup de Foudre) quand il est sous Bretteur Céleste. Pose aussi Insoignable et TP en croix.",
+    "control": "Comptez les tours (3, 7, 11...) : libérez, poussez ou tenez les joueurs Foudroyés loin de sa mêlée avant son tour.",
+    "tip": "Gardez vos sorts de poussée/dégagement pour les tours 3, 7, 11... et tuez-le vite avant que l'état Insoignable ne s'accumule."
+  },
+  "glandaf l'aigri": {
+    "invul": "Pas d'invulnérabilité. Sorts centrés sur l'entrave : vole des PA au contact et retire de la PO aux joueurs à <= 3 cases en début de tour.",
+    "danger": "Sort Terre à 4 PO fixes qui applique érosion et dommages subis augmentés. Frappe Feu en cercle de 3 cases et booste ses alliés en PA et PO.",
+    "control": "Évitez le CàC (vol PA + repoussement en croix) et la portée exacte de 4 cases. Tuez ses alliés d'abord pour limiter ses boosts de zone.",
+    "tip": "Combat à distance (> 4 PO) recommandé pour esquiver l'érosion, le vol de PA au CàC et le retrait PO à 3 cases."
+  },
+  "vengeuse masquee": {
+    "invul": "Pas d'invulnérabilité stricte, mais 200% de résistance Eau et Neutre (25% Terre/Feu/Air). Justice aveugle lui donne +50% rési (2t) par retrait PO.",
+    "danger": "Si vous retirez de la PO, elle devient quasi intouchable (+50% rési cumulables). Grosse frappe et vol de vie Eau, retrait PM et gros buffs d'équipe.",
+    "control": "Bannissez tout sort de retrait PO. Jouez uniquement Terre, Feu ou Air et entravez ses PM si besoin plutôt que sa portée.",
+    "tip": "Ne lui retirez jamais de PO et ne la tapez pas Eau/Neutre (200% rési) : privilégiez le burst Terre/Feu/Air."
+  },
+  "aigripoil": {
+    "invul": "Pas d'invulnérabilité. Gagne +1 PM infini et cumulable à la fin de chacun de ses tours, le rendant de plus en plus rapide.",
+    "danger": "OS instantanément toute cible à son CàC (sort relançable tous les 3 tours, dispo T1). Attire de 3 cases en ligne (7 PO), retire 3 PM et frappe Terre.",
+    "control": "Jouez full distance hors de ses lignes de vue/d'attirance. Entravez ses PM et bloquez-le avec des invocations (Cawotte, Arbre...).",
+    "tip": "Si Aigripoil atteint votre mêlée, placez une invocation à son CàC pour qu'il gaspille son OS dessus (CD 3 tours)."
+  },
+  "fantomayte": {
+    "invul": "Pas d'invulnérabilité, mais lance un renvoi de dommages (100% jusqu'à ~400 dégâts, 3 tours, relance 5 tours), débuffable. Invoque un Mefisto (tape Terre mêlée, minimise l'aléatoire, la soigne sur CC).",
+    "danger": "Téléportation jusqu'à 15 PO sans LDV (2x/tour) : tape Air en croix et pousse de 4 cases. Tout déplacement subi inflige -100 Puissance. S'auto-tuer sur son renvoi de dommages si non débuff.",
+    "control": "Le débuff est idéal contre son renvoi. Appliquer Pesanteur bloque sa téléportation. Évitez de vous faire pousser dans les murs (malus Puissance). Focus Fantômayte directement.",
+    "tip": "Prévoyez un débuff pour retirer son renvoi de dégâts (ou attendez la fin des 3 tours) et gardez vos distances ou posez Pesanteur."
+  },
+  "mogligli": {
+    "invul": "Mogligli n'est pas invulnérable, mais il invoque aléatoirement Bagarra, Balours ou Mulibre qui sont totalement invulnérables tout le combat (boostent PB, échangent de place ou appliquent Pesanteur/retrait PM).",
+    "danger": "Frappe Feu en mêlée et Terre en demi-cercle à distance avec poussée de 6 cases et état Indéplaçable. Se boost en PM/Tacle/Fuite et révèle l'invisibilité. Balours retire PM/Fuite et met Pesanteur.",
+    "control": "Ignorez les invocations invulnérables et focus Mogligli. Gardez de la distance en anticipant ses boosts PM et sa poussée de 6 cases pour ne pas finir coincé contre un mur ou bloqué en mêlée.",
+    "tip": "Ne gaspillez aucun PA sur Bagarra, Balours ou Mulibre (invulnérables) : burst uniquement Mogligli à distance."
+  },
+  "zatoishwan": {
+    "invul": "Pas d'invulnérabilité, mais réduit les dégâts reçus en mêlée (~40 fixe/coup) et possède un sort de renvoi de dégâts. S'il est accompagné d'autres monstres, il perd -1100 Vita et -50 Puissance par mob.",
+    "danger": "Gros dégâts Air en mêlée + poussée de 4 cases en croix (tous les 5 tours). Frappe Eau (-PA à 4 PO), Terre (-PO à 8 PO) et Feu en cercle de 2 (poison début de tour). Se boost PA/Puissance/Do et se soigne.",
+    "control": "Évitez la mêlée (réduction de dégâts + grosse frappe Air). Jouez à mi-distance/distance en gérant les lignes de vue pour limiter le retrait PA/PO. Nettoyez les mobs si besoin ou profitez de son malus d'alliés.",
+    "tip": "Combattez-le à distance pour éviter sa réduction mêlée et son sort Air, et surveillez son buff de renvoi de dégâts."
+  },
+  "amy l'empoisonneuse": {
+    "invul": "Pas d'invulnérabilité, mais intransportable/inéchangeable et renvoi fixe de 100 dégâts (50 sur ses ronces). Les retraits PA/PM ou poussées lui donnent un gros bouclier, et les poisons la soignent.",
+    "danger": "Tours 1, 7, 13... : carré de ronces + Pesanteur (2-5t). Stranguronces se propage en carré de 2 (poisons + -Puissance cumulables). État Empathique (non débuffable) renvoie 50% des dégâts infligés à un allié.",
+    "control": "Dispersez la team (hors carré de 2) pour stopper Stranguronces. Zéro retrait PA/PM, zéro poussée, zéro poison sur elle. Ne tapez pas Amy quand un allié fragile porte Empathique (ou sacrifiez-le pour burst).",
+    "tip": "Restez espacés, n'entravez jamais Amy (bouclier), soignez/protégez vos alliés des poisons et gérez l'état Empathique."
+  },
+  "darma": {
+    "invul": "Pas d'invulnérabilité, mais 50% rés. Neutre et réduction sur pièges/glyphes (Fumée Noire). Tous les 4 tours, elle et ses alliés deviennent invisibles 1 tour (-20% dégâts subis). Perd ~1000 PV max par mob allié.",
+    "danger": "Tours impairs : glyphes verts rayon 3 autour des mobs (Air + -6 PO). Tours pairs : ~350 Neutre + -4 PA à tout joueur hors d'un rayon 3 d'un mob. Vue en Noir tape ~300 Terre en cercle de 2 autour des mobs.",
+    "control": "Aux tours impairs, sortez des glyphes verts. Aux tours pairs, finissez à <= 3 PO d'un mob (idéalement à exactement 3 PO pour esquiver Vue en Noir en rayon 2). Nettoyez les adds gênants (Zoths).",
+    "tip": "Retenez la parité : tours impairs hors glyphes verts, tours pairs à 3 PO d'un monstre. Évitez de taper Neutre (50% rés.)."
+  },
+  "fojumo": {
+    "invul": "Pas d'invulnérabilité. Dès le tour 1, invoque autant de doubles (~4400 PV) que de joueurs. Pose un grand glyphe noir rayon 7 : Fojumo et ses doubles dedans sont invisibles et intaclables 2 tours (non dévoilables).",
+    "danger": "Les doubles appliquent Marquage (-2 PM) et Diversion (zone 2, -1 PM). Fojumo frappe Neutre en croix au CaC et double ses dégâts sur les cibles sous Marquage. Échange de place avec un double (+100 Puissance, +2 PM).",
+    "control": "Repérez ou sortez Fojumo/doubles du glyphe noir (poussée/attirance en zone ou sorts de zone). Tuez rapidement les doubles ou esquivez le Marquage pour éviter les doubles dégâts au CaC.",
+    "tip": "Les sorts de dévoilement ne marchent pas dans le glyphe noir : utilisez des zones ou sortez-les du glyphe, et nettoyez les doubles."
+  },
+  "katigrou": {
+    "invul": "Pas d'invulnérabilité. Possède 50% rés. Neutre (0% ailleurs). Maximise les effets aléatoires d'une cible jusqu'à 8 PO tous les 4 tours et vole 1 PA en croix autour de lui à chaque début de tour.",
+    "danger": "Se téléporte jusqu'à 12 PO (dégâts Neutre en croix). Ses frappes mêlée Neutre/Terre augmentent énormément selon ses PV manquants : très dangereux bas en vie.",
+    "control": "L'état Pesanteur bloque sa téléportation et permet de le garder à distance. Utilisez l'érosion pour limiter sa vitalité max et finissez-le vite une fois entamé.",
+    "tip": "Posez Pesanteur pour bloquer son bond à 12 PO, érodez-le et burst-le en fin de vie avant qu'il ne tape trop fort."
+  },
+  "ali grothor": {
+    "invul": "Tour 2 puis tous les 3 tours, Rage Électrique le rend Invulnérable 2 tours et pose Grillade 2 tours sur tous (non débuffables). Délock : un joueur sous Grillade doit commencer son tour à <= 2 PO d'Ali.",
+    "danger": "Grillade pose Foudroyé à chaque début de tour, amplifiant ses dégâts, malus rés./CC et Pesanteur. Tape fort Terre au CaC et Air/Neutre en zone. Chaque retrait PO lui donne +1 PM infini cumulable.",
+    "control": "Zéro retrait PO ! Soignez les alliés pour dissiper l'état Foudroyé. Pour le délock, placez un joueur sous Grillade à <= 2 PO d'Ali (puis soignez Foudroyé après l'activation si besoin).",
+    "tip": "Approchez un allié sous Grillade à <= 2 PO pour casser son invulnérabilité, soignez pour enlever Foudroyé et ne retirez jamais de PO."
+  },
+  "jerart dupaindur": {
+    "invul": "Pas d'invulnérabilité stricte, mais sa Bouteille de Pandabsynthe lui donne +80% rés. (jusqu'à 95%+) dans un rayon de 10 cases, avec -4 PM et Pesanteur. Tuez la Bouteille pour le rendre vulnérable.",
+    "danger": "Appel de la bouteille attire de 4 cases en étoile (lignes/diagonales) au début de son tour et de la bouteille. Tournée générale le propulse (zone Terre) et soigne la Bouteille à 100% si elle touche la cible.",
+    "control": "Focus la Bouteille de Pandabsynthe en priorité dès son invocation. Évitez de finir en ligne/diagonale et ne restez jamais au contact de la Bouteille. Gérez d'abord les monstres annexes si en groupe.",
+    "tip": "Détruisez la Bouteille dès qu'elle apparaît puis burst Jérart sur la fenêtre libre, sans jamais vous placer en étoile ni coller la Bouteille."
+  },
+  "monsieur pingouin": {
+    "invul": "Pas d'état Invulnérable. Au T1 uniquement, Gentleman du crime retire 100 PM et applique Pesanteur (1 tour, non débuffable) à toute l'équipe.",
+    "danger": "Frappe Eau au CàC (croix 1) avec effet aléatoire dont l'annulation de votre tour (ou vol PA/PM, poussée, Feu). Tous les 4 tours : soigne, réduit et rend invisibles ses alliés (cercle 3) ou les sacrifie (cercle 6).",
+    "control": "Placement prudent au T1 car vous êtes bloqués. Gardez-le à distance ou sous retrait PM dès le T2, et éliminez ses alliés avant son tour d'invisibilité/sacrifice.",
+    "tip": "Évitez absolument son CàC pour ne pas subir l'annulation de tour, et encaissez sereinement le T1 en Pesanteur avant de kiter dès le T2."
+  },
+  "padgref demoel": {
+    "invul": "Pas d'invulnérabilité. Châtiment éternel le booste de +100 Force/Agi/Chance/Intel (5 tours, 1 fois/tour, max +500) dès qu'il est frappé.",
+    "danger": "Sanction au CàC (dès T3, relance 2 tours) inflige 30% de ses PV max en Neutre. Attire de 6 cases en ligne jusqu'à 30 PO, échange + frappe Eau sans LdV (14 PO) et vole vie Feu/Air au CàC.",
+    "control": "Privilégiez de gros coups uniques pour limiter ses châtiments. Restez hors de ses lignes (attirance 30 PO) et hors de son CàC dès le T3. Tacle/entrave PM utiles.",
+    "tip": "Évitez le CàC aux tours impairs dès T3 (Sanction à 30% PV max) et ne le laissez pas en ligne ; burst rapide conseillé."
+  },
+  "roi camole": {
+    "invul": "Pas d'invulnérabilité. Il gagne de la Puissance à chaque début de tour s'il y a des Cactrucs sur le terrain, et pose des Cactrucs qui ripostent au contact quand on les frappe.",
+    "danger": "Au CàC (tous les 2 tours), frappe Terre, se repousse de 4 cases et devient invisible 1 tour. Échange de place (5 PO), frappe Air en croix (5 PO) et applique un malus de dégâts subis + invocation de Cactruc.",
+    "control": "Maintenez-le à >7 cases avec du retrait PM ou du blocage pour éviter son CàC et son invisibilité. Ne restez jamais collé à un Cactruc si vous l'attaquez.",
+    "tip": "Tant qu'il ne touche personne au CàC, il ne passe jamais invisible : misez sur le retrait PM et tapez les Cactrucs uniquement à distance."
+  },
+  "bouflouth": {
+    "invul": "Pas d'invulnérabilité. Mécanique clé : gagne +1 PM à chaque fois qu'il est poussé (évitez tout sort de poussée sur lui).",
+    "danger": "OS instantanément la cible à son CàC dès le T6 puis tous les 5 tours (T6, T11, T16...) en la remplaçant par un Bouftonmouth. Frappe Neutre en repoussant de 5 cases et se boost dommages tous les 3 tours.",
+    "control": "Jeu à distance et retrait PM obligatoires. Ne le poussez jamais et surveillez les Boufmouths légendaires (poussée/boost PM). Zéro allié au CàC aux tours 6, 11, 16...",
+    "tip": "Retrait PM + zéro poussée sur le boss, et gardez tout le monde hors de son CàC dès le tour 6 puis tous les 5 tours pour éviter l'OS."
+  },
+  "morblok": {
+    "invul": "Pas d'invulnérabilité, mais réduit tous les dégâts de 30% et répartit 50% des dommages subis dans un cercle de 2 cases autour de lui. Frapper en Terre/Neutre renvoie aussi 50% en zone autour de l'attaquant.",
+    "danger": "Malus cercle 2 autour de l'attaquant selon l'élément : Eau (-1 PA), Feu (désenvoûte 4 tours), Air (-50 Puissance), Terre/Neutre (renvoi 50%). Se TP à 5 PO et attire de 3 cases en zone Eau.",
+    "control": "Espacez vos personnages (>2 cases entre vous et loin de lui). Pesanteur bloque sa TP. Tapez idéalement Eau (-1 PA gérable) ou Feu si peu de buffs ; évitez Terre/Neutre.",
+    "tip": "Ne vous packez jamais autour de lui ni entre alliés : frappez à distance en Eau (ou Feu) et bloquez sa TP avec Pesanteur."
+  },
+  "nenufor tilotus": {
+    "invul": "Pas d'invulnérabilité. Invoque un Nufor (1000 PV) qui se multiplie s'il survit (4 Nufor au tour suivant, puis 8 ensuite).",
+    "danger": "Rhizome agressif (Feu + retrait PM) est relancé autant de fois qu'il y a de Nufor dans votre ligne de vue. Pose un glyphe vert (rayon 4) retirant jusqu'à 6 PM et frappant Terre autour de lui au tour suivant.",
+    "control": "Tuez immédiatement le premier Nufor avant sa multiplication. Restez hors du glyphe vert (rayon 4) et bloquez les lignes de vue des Nufor si certains survivent.",
+    "tip": "Focus absolu sur le premier Nufor dès son invocation pour empêcher la chaîne d'invocations et la multiplication de Rhizome agressif."
+  },
+  "vashkiwi": {
+    "invul": "Pas d'invulnérabilité. Invoque chaque tour une Fontaine Laiteuse invulnérable (meurt après 2 tours, max 2) posant un glyphe bleu en damier.",
+    "danger": "Poison Terre permanent à chaque début de tour sur chaque joueur (zone 2 cases). Glyphe des Fontaines : dégâts Eau + -100 Puissance. Retrait PM = attire de 4 cases ; retrait PA = +4 PA aux alliés.",
+    "control": "Espacez vos alliés (>2 cases) et restez loin des Fontaines (elle n'a pas de frappe directe). Désenvoûtez ses boucliers/réductions, tapez Feu/Eau et bannissez tout retrait PA/PM.",
+    "tip": "Zéro retrait PA/PM, gardez >2 cases entre alliés pour le poison et jouez à >5 PO des Fontaines tout en débuffant ses boucliers."
+  }
+}
