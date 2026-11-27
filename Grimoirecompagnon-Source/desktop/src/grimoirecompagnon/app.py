@@ -11,6 +11,7 @@ Même fonctionnement que Grimoire (classes) :
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 from PySide6.QtCore import QObject, QPoint, QRect, QRectF, QSettings, QSize, Qt, QTimer, QUrl, Signal, Slot
@@ -35,7 +36,10 @@ GLOW = (217, 165, 86)
 
 
 def user_dir() -> Path:
-    base = Path(os.environ.get("LOCALAPPDATA", Path.home() / ".cache"))
+    if sys.platform == "darwin":   # Mac : ~/Library/Caches/GrimoireCompagnon
+        base = Path.home() / "Library" / "Caches"
+    else:
+        base = Path(os.environ.get("LOCALAPPDATA", Path.home() / ".cache"))
     folder = base / "GrimoireCompagnon"
     folder.mkdir(parents=True, exist_ok=True)
     return folder
@@ -81,6 +85,7 @@ class _Bridge(QObject):
 class GrimoireWindow(QWidget):
     def __init__(self, page_path: Path, parent: QWidget | None = None) -> None:
         super().__init__(parent, OVERLAY_FLAGS)
+        self.setAttribute(Qt.WidgetAttribute.WA_MacAlwaysShowToolWindow, True)  # Mac : reste visible quand on clique dans le jeu
         self.setWindowTitle(APP_NAME)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setMinimumSize(MIN_SIZE)
@@ -131,6 +136,7 @@ class BookWidget(QWidget):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent, OVERLAY_FLAGS)
+        self.setAttribute(Qt.WidgetAttribute.WA_MacAlwaysShowToolWindow, True)  # Mac : reste visible quand on clique dans le jeu
         self.setWindowTitle(APP_NAME)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setFixedSize(BOOK_WIDGET_SIZE, BOOK_WIDGET_SIZE)

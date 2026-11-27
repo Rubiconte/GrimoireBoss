@@ -1,4 +1,4 @@
-# Construit la version Mac de Grimoire Boss (Apple Silicon et Intel) sur des Mac de GitHub.
+# Construit les versions Mac de Grimoire Boss et Grimoire Compagnon (Apple Silicon et Intel) sur des Mac de GitHub.
 # Onglet Actions > « Version Mac » > Run workflow. Les .dmg sont dans le résumé du run (section Artifacts).
 name: Version Mac
 
@@ -13,9 +13,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - runner: macos-latest      # Apple Silicon (arm64)
-          - runner: macos-15-intel    # Intel (x86_64)
+        runner: [macos-latest, macos-15-intel]   # Apple Silicon (arm64), Intel (x86_64)
+        app:
+          - name: grimoire-boss
+            dir: GrimoireBoss-Source/desktop
+          - name: grimoire-compagnon
+            dir: Grimoirecompagnon-Source/desktop
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 40
     steps:
@@ -24,9 +27,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Construire
-        run: sh GrimoireBoss-Source/desktop/build_mac.sh
+        run: sh ${{ matrix.app.dir }}/build_mac.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: grimoire-boss-mac-${{ runner.arch }}
-          path: GrimoireBoss-Source/desktop/dist/*.dmg
+          name: ${{ matrix.app.name }}-mac-${{ runner.arch }}
+          path: ${{ matrix.app.dir }}/dist/*.dmg
           if-no-files-found: error
