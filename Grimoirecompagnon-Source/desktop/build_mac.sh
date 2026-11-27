@@ -38,6 +38,8 @@ PLIST="$APP/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string 11.0" "$PLIST" 2>/dev/null || true
 codesign --force --deep --sign - "$APP"
 codesign --verify --deep "$APP"
+# Contrôle : le moteur web de Qt est bien embarqué (sinon l'appli ne s'ouvre pas).
+find "$APP" -name "QtWebEngineCore.framework" -maxdepth 6 | grep -q . || { echo "QtWebEngineCore absent de l'appli"; exit 1; }
 
 # Contrôle : la page de l'appli se construit avec les ressources embarquées.
 python3 -c "import sys; sys.path.insert(0, 'src'); from pathlib import Path; from grimoirecompagnon.page import write_qt_page; print(write_qt_page(Path('build/check.html')))"
