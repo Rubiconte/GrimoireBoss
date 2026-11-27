@@ -24,7 +24,10 @@ from PySide6.QtWidgets import QApplication, QMenu, QVBoxLayout, QWidget
 
 APP_NAME = 'Grimoire Boss'
 APP_URL = 'https://bworkshop.app/tacle-retrait-app/?widget=1'
-DATA_DIR = os.path.join(os.environ.get('APPDATA') or os.path.expanduser('~'), 'GrimoireBoss')
+if sys.platform == 'darwin':   # Mac : ~/Library/Application Support/GrimoireBoss
+    DATA_DIR = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support', 'GrimoireBoss')
+else:
+    DATA_DIR = os.path.join(os.environ.get('APPDATA') or os.path.expanduser('~'), 'GrimoireBoss')
 STATE_FILE = os.path.join(DATA_DIR, 'fenetre.json')
 DEFAULT = {'width': 480, 'height': 820}
 BOOK_WIN = 96     # taille de la fenêtre du petit livre (marge pour l'ombre et le survol)
@@ -229,6 +232,7 @@ class BookWidget(QWidget):
     def __init__(self, app):
         super().__init__(None, Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool | Qt.NoDropShadowWindowHint)
         self.app = app
+        self.setAttribute(Qt.WA_MacAlwaysShowToolWindow)  # Mac : reste visible quand on clique dans le jeu
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setFixedSize(BOOK_WIN, BOOK_WIN)
         self.setWindowTitle(APP_NAME + ' (livre)')
