@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grimoire Compagnon</title>
+<link rel="icon" href="book_closed.svg" type="image/svg+xml">
+<!--QWEBCHANNEL-->
+<style>
+@font-face{font-family:"Alegreya Sans";font-weight:400;src:url("fonts/AlegreyaSans-Regular.ttf")}
+@font-face{font-family:"Alegreya Sans";font-weight:500;src:url("fonts/AlegreyaSans-Medium.ttf")}
+@font-face{font-family:"Alegreya Sans";font-weight:700;src:url("fonts/AlegreyaSans-Bold.ttf")}
+@font-face{font-family:"Alegreya SC";font-weight:500;src:url("fonts/AlegreyaSC-Medium.ttf")}
+@font-face{font-family:"Alegreya SC";font-weight:700;src:url("fonts/AlegreyaSC-Bold.ttf")}
+:root{
+  /* Identité compagnon : reprend l'icône en jeu (casque à cornes sur fond cramoisi) : vin sombre, acier, bronze */
+  --stage:#0c0709;--win:#170e11;--crimson:#9c3448;--crimson-2:#c2566b;--steel:#b9cfcc;
+  --line:rgba(240,214,220,.08);--line-2:rgba(240,214,220,.14);
+  --text:#f3e9ea;--body:#d8c9cc;--muted:#a8919a;--faint:#6f5a61;
+  --gold:#d9a556;--gold-2:#f2d39a;--gold-soft:rgba(217,165,86,.13);
+  --warm:#ffdf9e;
+  --neutre:#b9b1a3;--feu:#e06a4c;--eau:#55a9dc;--air:#7cc46d;--terre:#c99550;--multi:#b48cd8;--soin:#e58fb0;--soutien:#9aa1a8;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:radial-gradient(1200px 700px at 50% 20%,#2a1018 0%,var(--stage) 70%);color:var(--text);
+  font:15px/1.35 "Alegreya Sans",system-ui,sans-serif;font-variant-numeric:lining-nums tabular-nums;
+  display:flex;justify-content:center;align-items:flex-start;padding:32px 16px;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid rgba(217,165,86,.7);outline-offset:1px}
+
+/* ---------- Fenêtre (même gabarit que Grimoire classe) ---------- */
+.win{position:fixed;container:win / inline-size;left:var(--x,calc(50vw - 250px));top:var(--y,32px);width:var(--w,500px);height:var(--h,min(860px,calc(100vh - 64px)));transform-origin:0 0;
+  background:linear-gradient(180deg,#241318 0,var(--win) 180px);border:1px solid rgba(217,165,86,.22);border-radius:14px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,240,210,.07);
+  display:flex;flex-direction:column;overflow:hidden}
+.win.anim-in{animation:winIn .22s cubic-bezier(.2,.8,.2,1)}
+.win.anim-out{animation:winIn .16s cubic-bezier(.6,0,.8,.4) reverse forwards}
+.win.closed{display:none}
+@keyframes winIn{from{opacity:0;transform:scale(.18)}to{opacity:1;transform:none}}
+.titlebar{position:relative;display:flex;align-items:center;gap:8px;height:50px;padding:0 12px 0 10px;flex:none;cursor:move;touch-action:none;
+  background:linear-gradient(180deg,var(--crimson-2) 0,var(--crimson) 55%,#7a2537 100%);box-shadow:inset 0 1px 0 rgba(255,220,225,.25),inset 0 -1px 0 rgba(0,0,0,.4)}
+.titlebar button,.titlebar label{cursor:pointer}
+body.moving,body.resizing{user-select:none}
+body.resizing{cursor:nwse-resize}
+.book-btn{width:40px;height:32px;display:grid;place-items:center;border-radius:8px;transition:transform .15s,filter .15s;flex:none}
+.book-btn:hover{transform:translateY(-1px) scale(1.06);filter:drop-shadow(0 0 6px rgba(217,165,86,.55))}
+.book-btn svg{width:36px;height:27px;display:block;filter:drop-shadow(0 1px 1px rgba(40,5,12,.6))}
+
+/* ---------- Livre fermé (widget flottant) ---------- */
+.widget{position:fixed;left:var(--bx,24px);top:var(--by,24px);z-index:60;width:64px;height:64px;padding:0;display:none;cursor:pointer;touch-action:none;border-radius:14px;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.55));transition:transform .15s,filter .15s}
+.widget.on{display:block}
+.widget:hover{transform:translateY(-2px) scale(1.05);filter:drop-shadow(0 8px 18px rgba(0,0,0,.6)) drop-shadow(0 0 10px rgba(194,86,107,.5))}
+.widget.dragging{cursor:grabbing;transform:scale(1.08)}
+.widget svg{width:100%;height:100%;display:block;overflow:visible}
+.widget .glow{animation:gem 2.4s ease-in-out infinite}
+@keyframes gem{50%{opacity:.35}}
+.widget .cover{transform-box:fill-box;transform-origin:left center;transition:transform .22s cubic-bezier(.5,0,.75,0)}
+.widget.opening .cover{transform:scaleX(.05) skewY(-6deg)}
+.widget.pop{animation:pop .22s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.widget .label{position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:2px;font:700 10px/1 "Alegreya SC";letter-spacing:.08em;color:var(--gold-2);white-space:nowrap;text-shadow:0 1px 4px #000;pointer-events:none}
+
+/* ---------- Redimensionnement ---------- */
+.grip{position:absolute;width:22px;height:22px;cursor:nwse-resize;z-index:5;touch-action:none}
+.grip.br{right:0;bottom:0}
+.grip.tl{left:0;top:0}
+.grip::before{content:"";position:absolute;width:9px;height:9px;opacity:.8;
+  background:linear-gradient(135deg,transparent 45%,var(--faint) 45% 52%,transparent 52% 66%,var(--faint) 66% 73%,transparent 73%)}
+.grip.br::before{right:5px;bottom:5px}
+.grip.tl::before{left:5px;top:5px;transform:rotate(180deg)}
+.grip:hover::before{background:linear-gradient(135deg,transparent 45%,var(--gold) 45% 52%,transparent 52% 66%,var(--gold) 66% 73%,transparent 73%)}
+/* Hébergement : appli (Qt, fenêtre native sans cadre) ou intégration (iframe ?embed) */
+html.embed,html.embed body{background:var(--win);padding:0;overflow:hidden}
+html.embed .win{left:0 !important;top:0 !important;width:100vw !important;height:100vh !important;border-radius:0;box-shadow:none}
+html.embed .widget,html.embed .grip{display:none !important}
+html.embed .titlebar,html.embed .titlebar .book-btn{cursor:default}
+html.qt,html.qt body{background:transparent;padding:0;overflow:hidden}
+html.qt .win{left:0 !important;top:0 !important;width:100vw !important;height:100vh !important;box-shadow:none}
+html.qt .widget{display:none !important}
+@media (prefers-reduced-motion:reduce){.win.anim-in,.win.anim-out,.widget.pop,.widget .glow{animation:none}.widget .cover{transition:none}}
+.titlebar::after{content:"";position:absolute;left:18px;right:18px;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(217,165,86,.45),transparent)}
+.titlebar h1{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.titlebar .cn{font:700 17px/1 "Alegreya SC",serif;letter-spacing:.06em;color:#fff4ec;text-shadow:0 1px 0 rgba(60,10,20,.8),0 2px 8px rgba(60,10,20,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titlebar .cn small{font:500 12px/1 "Alegreya Sans";letter-spacing:0;color:rgba(255,230,235,.6);margin-left:6px}
+
+/* ---------- Fiche du compagnon (en tête) ---------- */
+.hero{position:relative;display:grid;grid-template-columns:68px minmax(0,1fr);gap:14px;align-items:center;padding:12px 16px 12px;overflow:hidden;flex:none;border-bottom:1px solid var(--line)}
+.hero-bg{position:absolute;inset:-30px;background:var(--bg) center/cover no-repeat;filter:blur(26px) saturate(1.4);opacity:.4;transform:scale(1.15)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(23,14,17,.15),rgba(23,14,17,.88) 70%)}
+.hero > :not(.hero-bg){position:relative;z-index:1}
+.medal{width:68px;height:68px;border-radius:50%;background:#0e0809;object-fit:cover;
+  box-shadow:0 0 0 2px var(--c),0 0 0 5px rgba(0,0,0,.4),0 0 0 6px rgba(185,207,204,.35),0 6px 18px rgba(0,0,0,.55)}
+.hero h2{font:700 23px/1.05 "Alegreya SC",serif;color:var(--text);letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.hero-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.htag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:9px;background:rgba(0,0,0,.38);color:var(--body);box-shadow:inset 0 0 0 1px var(--line-2)}
+.htag .dot{width:6px;height:6px}
+.htag.el{color:var(--c)}
+.lvl-pill{display:inline-flex;align-items:center;gap:2px;height:28px;border:1px solid rgba(0,0,0,.35);border-radius:7px;background:rgba(40,6,14,.45);padding:0 4px 0 8px;font:700 11px/1 "Alegreya SC";letter-spacing:.08em;color:var(--muted);flex:none}
+.lvl-pill input{width:42px;height:22px;border:0;background:transparent;text-align:right;font:700 14px/1 "Alegreya Sans";color:var(--gold-2);outline:none;-moz-appearance:textfield}
+.lvl-pill input::-webkit-inner-spin-button{opacity:.4}
+
+/* ---------- Grille des compagnons ---------- */
+.roster{padding:10px 14px 10px;display:flex;flex-direction:column;gap:8px}
+.rbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.elbtns{display:flex;gap:3px;margin-right:auto}
+.elb{width:30px;height:28px;border-radius:7px;display:grid;place-items:center;border:1px solid var(--line-2);background:rgba(0,0,0,.18);transition:background .12s,border-color .12s}
+.elb i{width:10px;height:10px;border-radius:50%;background:var(--c);opacity:.55;transition:opacity .12s,transform .12s}
+.elb:hover i{opacity:1}
+.elb[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 18%,transparent)}
+.elb[aria-pressed="true"] i{opacity:1;transform:scale(1.15)}
+.elb.all{width:auto;padding:0 8px;font:700 10.5px/1 "Alegreya SC";letter-spacing:.08em;color:var(--muted)}
+.elb.all[aria-pressed="true"]{color:var(--gold-2);border-color:rgba(217,165,86,.45);background:var(--gold-soft)}
+.effect.sm{height:28px;font-size:13px;padding:0 24px 0 9px;background-position:right 8px center}
+.grp-h{grid-column:1/-1;display:flex;align-items:center;gap:6px;padding:4px 2px 0;font:700 10px/1 "Alegreya SC";letter-spacing:.12em;color:var(--faint)}
+.grp-h .dot{width:6px;height:6px}
+.grp-h span{font:500 11px/1 "Alegreya Sans";letter-spacing:0}
+.grid .none-msg{grid-column:1/-1;font-size:12.5px;color:var(--faint);padding:8px 2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px 5px;max-height:184px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(240,214,220,.16) transparent;padding:4px}
+/* Médaillons : un jeton rond par compagnon, cerclé de la couleur de son élément principal */
+.cp{position:relative;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;overflow:visible;
+  background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.06),rgba(0,0,0,.35));
+  box-shadow:0 0 0 1.5px color-mix(in srgb,var(--c,var(--soutien)) 55%,transparent),0 2px 6px rgba(0,0,0,.5);transition:transform .12s,box-shadow .12s}
+.cp:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 0 0 2px var(--c,var(--soutien)),0 2px 8px rgba(0,0,0,.5)}
+.cp img{width:100%;height:100%;border-radius:50%;object-fit:cover;opacity:.6;filter:grayscale(.5) brightness(.9);transition:opacity .12s,filter .12s}
+.cp:hover img{opacity:1;filter:none}
+.cp[aria-pressed="true"]{box-shadow:0 0 0 2px var(--c,var(--soutien)),0 0 0 4.5px rgba(217,165,86,.55),0 0 16px rgba(217,165,86,.45)}
+.cp[aria-pressed="true"] img{opacity:1;filter:none}
+.cp .hit{position:absolute;right:-3px;top:-3px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--gold);color:#1a1510;font:700 10.5px/16px "Alegreya Sans";text-align:center}
+.cp.none{opacity:.28}
+
+/* ---------- Recherche + filtres ---------- */
+.filters{padding:0 14px 10px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--line)}
+.searchrow{display:flex;gap:8px}
+.search{position:relative;display:flex;align-items:center;flex:1}
+.search svg{position:absolute;left:11px;width:15px;height:15px;color:var(--faint);pointer-events:none}
+.search input{width:100%;height:36px;padding:0 32px 0 34px;background:rgba(0,0,0,.28);border:1px solid var(--line-2);border-radius:var(--r);outline:none;font-size:14.5px}
+.search input::placeholder{color:var(--faint)}
+.search input::-webkit-search-cancel-button{display:none;-webkit-appearance:none}
+.search input:focus{border-color:rgba(217,165,86,.55);box-shadow:0 0 0 3px rgba(217,165,86,.10)}
+.search .clear{position:absolute;right:5px;width:26px;height:26px;border-radius:5px;color:var(--muted);display:none}
+.search.has-value .clear{display:grid;place-items:center}
+.effect{appearance:none;height:36px;padding:0 26px 0 10px;border-radius:var(--r);border:1px solid var(--line-2);color:var(--muted);font-size:14px;cursor:pointer;outline:none;
+  background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23a39882' stroke-width='1.6'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 10px center}
+.effect.active{color:var(--text);border-color:rgba(217,165,86,.35);background-color:var(--gold-soft)}
+.effect option{background:#1d1115;color:var(--text)}
+.chips{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 8px;border-radius:13px;font-size:13.5px;font-weight:500;color:var(--muted);border:1px solid transparent}
+.chip:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.chip[aria-pressed="true"]{color:var(--text);background:var(--gold-soft);border-color:rgba(217,165,86,.35)}
+.chips .count{margin-left:auto;font-size:12.5px;color:var(--faint);white-space:nowrap}
+.chips .count button{color:var(--gold);font-size:12.5px}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--c,var(--soutien))}
+
+/* ---------- Corps défilant ---------- */
+.list{flex:1;overflow-y:auto;overflow-x:clip;padding:0 10px 14px;scrollbar-width:thin;scrollbar-color:rgba(240,214,220,.16) transparent}
+.list::-webkit-scrollbar{width:8px}.list::-webkit-scrollbar-thumb{background:rgba(240,214,220,.14);border-radius:4px;border:2px solid transparent;background-clip:padding-box}
+.cols{position:sticky;top:0;z-index:2;background:var(--win);display:flex;align-items:center;gap:8px;padding:11px 4px 7px;margin-bottom:2px;font:700 10.5px/1 "Alegreya SC";letter-spacing:.14em;color:var(--faint)}
+.cols .r{margin-left:auto;letter-spacing:.04em;font:500 11.5px/1 "Alegreya Sans";color:var(--faint)}
+
+/* Bandeau : rôles, passif, stats repliables */
+.about{margin:10px 2px 4px;display:flex;flex-direction:column;gap:8px}
+.roles{display:flex;gap:4px;flex-wrap:wrap}
+.role{font-size:12px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(255,255,255,.05);color:var(--body);box-shadow:inset 0 0 0 1px var(--line-2)}
+.passive{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:center;padding:7px 10px 7px 8px;border-radius:10px;background:linear-gradient(90deg,rgba(217,165,86,.11),rgba(217,165,86,.02));box-shadow:inset 0 0 0 1px rgba(217,165,86,.2);cursor:default}
+.passive .ico{width:36px;height:36px}
+.passive .name{color:var(--gold-2)}
+.passive .tagline{font-size:12.5px;color:var(--body);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+details.carac{border-radius:10px;background:rgba(255,255,255,.022);box-shadow:inset 0 0 0 1px rgba(240,214,220,.05)}
+details.carac summary{list-style:none;display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;font-size:13px;color:var(--muted)}
+details.carac summary::-webkit-details-marker{display:none}
+details.carac summary b{color:var(--text)}
+details.carac summary .sep{color:var(--faint)}
+details.carac summary .chev{margin-left:auto;color:var(--faint);transition:transform .15s}
+details.carac[open] summary .chev{transform:rotate(90deg)}
+.carac-body{padding:0 10px 10px;display:grid;gap:8px}
+.kvgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 14px;font-size:13px;color:var(--muted)}
+.kvgrid b{color:var(--text)}
+.res{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.res span{text-align:center;font-size:12px;color:var(--muted);padding:4px 0;border-radius:6px;background:rgba(0,0,0,.2)}
+.res b{display:block;font-size:14px;color:var(--text)}
+.note{font-size:11.5px;color:var(--faint)}
+
+/* Réglage dégâts */
+.calc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:7px 10px;border-radius:10px;background:rgba(0,0,0,.22);box-shadow:inset 0 0 0 1px var(--line-2);font-size:12.5px;color:var(--muted)}
+.switch{display:inline-flex;align-items:center;gap:7px;cursor:pointer;color:var(--body);font-weight:500}
+.switch input{position:absolute;opacity:0;pointer-events:none}
+.switch span{width:28px;height:16px;border-radius:8px;background:rgba(255,255,255,.12);position:relative;transition:background .15s;flex:none}
+.switch span::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#d8cfbd;transition:transform .15s}
+.switch input:checked + span{background:rgba(217,165,86,.55)}
+.switch input:checked + span::after{transform:translateX(12px);background:#fff3d6}
+.switch input:focus-visible + span{box-shadow:0 0 0 2px var(--gold)}
+.calc b{color:var(--body)}
+.resin{margin-left:auto;display:inline-flex;align-items:center;gap:5px}
+.resin input{width:50px;height:24px;padding:0 6px;border-radius:6px;background:rgba(0,0,0,.3);border:1px solid var(--line-2);text-align:right;outline:none}
+.resin input:focus{border-color:rgba(217,165,86,.55)}
+.resin input:disabled{opacity:.4}
+
+/* Lignes de sorts (comme Grimoire classe) */
+.spells{display:grid;gap:4px}
+.spell{display:grid;grid-template-columns:38px minmax(0,1fr) auto;column-gap:10px;align-items:center;padding:7px 10px 7px 8px;border-radius:10px;
+  background:rgba(255,255,255,.022);box-shadow:inset 0 0 0 1px rgba(240,214,220,.04);cursor:default}
+.spell:hover,.spell.pinned{background:rgba(217,165,86,.07)}
+.spell.locked{opacity:.45}
+.spell.miss{opacity:.32}
+.ico{width:38px;height:38px;border-radius:8px;overflow:hidden;background:#0a0f0c;box-shadow:0 1px 3px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.1)}
+.spell:hover .ico,.spell.pinned .ico{box-shadow:0 0 0 1.5px var(--gold)}
+.ico img{width:100%;height:100%;display:block}
+.spell > div{min-width:0}
+.name{display:flex;align-items:baseline;gap:6px;font-size:14.5px;font-weight:700;line-height:1.2;min-width:0}
+.name .nt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk{font:700 10px/1 "Alegreya SC";letter-spacing:.08em;color:var(--faint);flex:none}
+.rk.lock{color:#c98d5a}
+.stats{display:flex;align-items:center;flex-wrap:nowrap;overflow:hidden;font-size:12px;color:var(--muted);line-height:1.3;margin-top:2px;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent)}
+.stats > span{white-space:nowrap;display:inline-flex;align-items:center}
+.stats > span + span::before{content:"·";margin:0 4px;color:var(--faint)}
+.stats .dot{margin-right:5px;width:6px;height:6px}
+.stats .warn{color:#e5b46f}
+.hitsum{text-align:right;line-height:1.1;white-space:nowrap}
+.hitsum b{display:block;font-size:15px;color:var(--c,var(--warm))}
+.hitsum span{font-size:10.5px;color:var(--faint);letter-spacing:.04em}
+mark{background:rgba(217,165,86,.30);color:inherit;border-radius:2px;padding:0 1px}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
+.empty b{display:block;color:var(--text);font-weight:500;margin-bottom:4px}
+
+/* ---------- Infobulle (survol, clic pour épingler) ---------- */
+.tip{position:fixed;z-index:50;width:340px;max-height:calc(100vh - 24px);overflow:hidden auto;
+  background:linear-gradient(180deg,#26141a 0,#150c0f 120px);border:1px solid rgba(217,165,86,.25);border-radius:12px;
+  box-shadow:0 22px 60px rgba(0,0,0,.65),0 0 0 1px rgba(0,0,0,.6);font-size:13.5px;line-height:1.4;pointer-events:none;display:none;scrollbar-width:none}
+.tip.on{display:block}
+.tip.pinned{pointer-events:auto;border-color:rgba(217,165,86,.45)}
+.tip-head{position:relative;display:grid;grid-template-columns:46px 1fr;gap:11px;align-items:center;padding:13px 14px 11px}
+.tip-head::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:1px;background:linear-gradient(90deg,rgba(217,165,86,.4),transparent)}
+.tip-head .ico{width:46px;height:46px;box-shadow:0 0 0 1.5px var(--gold),0 2px 8px rgba(0,0,0,.5)}
+.tip-head h3{font:700 17px/1.15 "Alegreya Sans";color:var(--gold-2)}
+.tip-head .rank{display:inline-flex;gap:6px;margin-top:4px;font-size:11.5px;color:var(--muted)}
+.tip-head .rank span{border:1px solid var(--line-2);border-radius:4px;padding:0 6px}
+.tip-head .rank .lock{color:#e5b46f;border-color:rgba(229,180,111,.35)}
+.tip-sec{padding:10px 14px}
+.tip-sec + .tip-sec{border-top:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;color:var(--muted);font-size:13px}
+.kv b{color:var(--text);font-weight:700}
+.kv .full{grid-column:1/-1}
+.kv .warn b,.kv .warn{color:#e5b46f}
+.tip .desc{color:#e6d3d6;white-space:pre-line;font-size:13px}
+.tip-h{display:flex;justify-content:space-between;gap:8px;font:700 11px/1 "Alegreya SC";letter-spacing:.16em;color:var(--gold);padding:9px 14px 7px;background:rgba(217,165,86,.06);border-top:1px solid rgba(217,165,86,.12)}
+.tip-h small{font:500 11px/1 "Alegreya Sans";letter-spacing:0;color:var(--muted)}
+.fx{list-style:none;padding:8px 14px 10px;display:flex;flex-direction:column;gap:4px}
+.fx li{position:relative;padding-left:18px;color:var(--text)}
+.fx li::before{content:"";position:absolute;left:3px;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--faint)}
+.fx li.state::before{border-radius:1px;transform:rotate(45deg);background:var(--gold)}
+.fx li.neg{color:#ef8a7a}
+.fx li.neg::before{background:#ef8a7a}
+.fx li.dmg::before,.fx li.heal::before{background:var(--c)}
+.fx li.heal::before{border-radius:1px}
+.fx b{font-weight:700}
+.fx b.est{color:var(--warm)}
+.fx .nm{color:var(--gold-2)}
+.fx .meta{display:block;font-size:11.5px;color:var(--faint);margin-top:1px}
+.tip-ranks{display:flex;gap:4px;flex-wrap:wrap}
+.tip-ranks span{font-size:11.5px;padding:1px 7px;border-radius:5px;color:var(--faint);box-shadow:inset 0 0 0 1px var(--line)}
+.tip-ranks span.cur{color:var(--gold-2);box-shadow:inset 0 0 0 1px rgba(217,165,86,.45)}
+.tip-foot{padding:8px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--faint);display:flex;justify-content:space-between;gap:8px}
+
+.foot{flex:none;padding:7px 14px;border-top:1px solid var(--line);font-size:11px;color:var(--faint);display:flex;justify-content:space-between;gap:10px}
+.foot a{color:var(--muted)}
+
+/* Large : sorts sur deux colonnes */
+@container win (min-width: 720px){
+  .spells{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+  .about .roles,.about .calc{grid-column:1/-1}
+  .grid{max-height:none}
+}
+@media (max-width:520px){
+  .win{left:0 !important;top:0 !important;width:100vw !important;height:100% !important;border-radius:0}
+  .grip{display:none}
+  .titlebar{cursor:default}
+  .tip{width:calc(100vw - 20px)}
+}
+</style>
+</head>
+<body>
+<div class="win" id="win">
+  <header class="titlebar">
+    <button class="book-btn" id="closeBook" type="button" title="Refermer le grimoire" aria-label="Refermer le grimoire"><svg viewBox="0 0 64 48" aria-hidden="true">
+      <ellipse cx="32" cy="44" rx="27" ry="3" fill="#000" opacity=".35"/>
+      <path d="M3 13Q32 7 61 13V41Q32 35 3 41Z" fill="url(#bkLea)" stroke="#2a1404" stroke-width="1.2"/>
+      <path d="M7 11Q20 6 31 11V38Q20 33 7 37Z" fill="url(#bkPages)"/>
+      <path d="M33 11Q44 6 57 11V37Q44 33 33 38Z" fill="url(#bkPages)"/>
+      <path d="M11 16q9-3 16 0M11 21q9-3 16 0M11 26q9-3 16 0M37 16q9-3 16 0M37 21q9-3 16 0M37 26q9-3 16 0" stroke="#a87b45" stroke-width=".9" fill="none" opacity=".75"/>
+      <path d="M32 11V39" stroke="url(#bkGold)" stroke-width="1.6"/>
+      <circle cx="32" cy="8.5" r="8" fill="url(#bkGlow)"/>
+      <g fill="#ffe6b8"><ellipse cx="32" cy="10.4" rx="2.9" ry="2.4"/><circle cx="28.9" cy="7.3" r="1.15"/><circle cx="30.9" cy="5.5" r="1.15"/><circle cx="33.1" cy="5.5" r="1.15"/><circle cx="35.1" cy="7.3" r="1.15"/></g>
+      <path d="M3 37v4l5-1M61 37v4l-5-1" fill="none" stroke="url(#bkGold)" stroke-width="2.4" stroke-linecap="round"/>
+    </svg></button>
+    <h1><span class="cn">Grimoire Compagnon<small id="ccount"></small></span></h1>
+    <label class="lvl-pill" title="Niveau de ton personnage : règle les stats, les rangs et les dégâts">NIV.
+      <input id="lvl" type="number" min="1" max="200" value="200" inputmode="numeric">
+    </label>
+  </header>
+
+  <section class="hero" id="hero" aria-live="polite"></section>
+
+  <section class="roster">
+    <div class="rbar">
+      <div class="elbtns" id="rosterEls" role="group" aria-label="Filtrer par élément"></div>
+      <select class="effect sm" id="roleSel" aria-label="Rôle"></select>
+      <select class="effect sm" id="sortSel" aria-label="Trier">
+        <option value="nom">Tri : nom</option>
+        <option value="element">Tri : élément</option>
+        <option value="role">Tri : rôle</option>
+      </select>
+    </div>
+    <div class="grid" id="grid" role="group" aria-label="Compagnons"></div>
+  </section>
+
+  <div class="filters">
+    <div class="searchrow">
+      <label class="search" id="searchWrap">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>
+        <input id="q" type="search" placeholder="Chercher : soin, pousse, PM, invocation…" autocomplete="off" spellcheck="false">
+        <button class="clear" type="button" aria-label="Effacer"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+      </label>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="list" id="list"></div>
+  <footer class="foot">
+    <span>Grimoire Compagnon · projet fan non affilié à Ankama</span>
+    <span id="rel"></span>
+  </footer>
+  <div class="grip tl" data-grip="tl" title="Redimensionner (double-clic : taille par défaut)"></div>
+  <div class="grip br" data-grip="br" title="Redimensionner (double-clic : taille par défaut)"></div>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="bkLea" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c2566b"/><stop offset=".5" stop-color="#9c3448"/><stop offset="1" stop-color="#5e1a29"/></linearGradient>
+  <linearGradient id="bkSpine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3d0f1a"/><stop offset="1" stop-color="#6e2133"/></linearGradient>
+  <linearGradient id="bkGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0b8"/><stop offset=".45" stop-color="#e7b44a"/><stop offset="1" stop-color="#94600f"/></linearGradient>
+  <linearGradient id="bkPages" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbeac0"/><stop offset="1" stop-color="#d1a76a"/></linearGradient>
+  <radialGradient id="bkGem" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#ffe9ee"/><stop offset=".35" stop-color="#ff5d7c"/><stop offset="1" stop-color="#6b0c22"/></radialGradient>
+  <radialGradient id="bkGlow"><stop offset="0" stop-color="#ffd27a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+</defs></svg>
+<button class="widget" id="widget" type="button" title="Ouvrir le grimoire (glisser pour déplacer)" aria-label="Ouvrir le grimoire"><svg viewBox="0 0 64 64" aria-hidden="true">
+  <ellipse cx="33" cy="57" rx="22" ry="3.5" fill="#000" opacity=".4"/>
+  <rect x="12" y="15" width="44" height="39" rx="4" fill="#2a0a12"/>
+  <rect x="12" y="13" width="42" height="38" rx="3" fill="url(#bkPages)"/>
+  <path d="M14 47h40M14 44.5h40M14 42h40" stroke="#b98a4e" stroke-width=".6" opacity=".7"/>
+  <path d="M38 48v10.5l2.2-2.2 2.2 2.2V48z" fill="#c2566b" stroke="#5e1a29" stroke-width=".7"/>
+  <g class="cover">
+    <rect x="7" y="9" width="44" height="40" rx="4" fill="url(#bkLea)" stroke="#2a0a12" stroke-width="1.2"/>
+    <rect x="7" y="9" width="8" height="40" rx="3" fill="url(#bkSpine)"/>
+    <path d="M15 9v40" stroke="#e7b44a" stroke-width="1" opacity=".55"/>
+    <rect x="19" y="12.5" width="28" height="33" rx="2" fill="none" stroke="#e7b44a" stroke-width=".8" opacity=".5"/>
+    <g fill="#e7b44a" opacity=".9"><ellipse cx="33" cy="20.6" rx="3.7" ry="3.1"/><circle cx="29" cy="16.6" r="1.45"/><circle cx="31.6" cy="14.6" r="1.45"/><circle cx="34.4" cy="14.6" r="1.45"/><circle cx="37" cy="16.6" r="1.45"/></g>
+    <path d="M24 39.5h18" stroke="#e7b44a" stroke-width=".8" opacity=".45"/>
+    <rect x="7" y="25.5" width="47" height="7" fill="url(#bkGold)" stroke="#6b4210" stroke-width=".8"/>
+    <circle class="glow" cx="51" cy="29" r="10" fill="url(#bkGlow)"/>
+    <rect x="45.5" y="23.5" width="11" height="11" rx="2.5" fill="url(#bkGold)" stroke="#6b4210" stroke-width=".9"/>
+    <circle cx="51" cy="29" r="3.2" fill="url(#bkGem)"/>
+    <path d="M7 15V12a3 3 0 013-3h4" fill="none" stroke="url(#bkGold)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M44 9h3a4 4 0 014 4v3" fill="none" stroke="url(#bkGold)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M7 43v2a4 4 0 004 4h3" fill="none" stroke="url(#bkGold)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M44 49h3a4 4 0 004-4v-3" fill="none" stroke="url(#bkGold)" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg><span class="label">COMPAGNONS</span></button>
+
+<script>
+const DATA_URL = "../data/companions_fr.json";
+const DATA = /*DATA*/null;
+const IMG = /*IMG*/"../data/img/";
+window.HOST = /*HOST*/"web";
+if (HOST === "qt") document.documentElement.classList.add("qt");
+else if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");
+const HOSTED = HOST === "qt" || document.documentElement.classList.contains("embed");
+const portraitSrc = c => `${IMG}companions/${c.asset}.png`;
+const iconSrc = s => `${IMG}spells/${s.icon}.png`;
+
+const EL = {neutre:"Neutre",terre:"Terre",feu:"Feu",eau:"Eau",air:"Air",multi:"Multi",soin:"Soin",soutien:"Soutien"};
+const ROLES = ["Soin","Dégâts","Placement","Entrave","Protection","Invocation"];
+const TARGET = {a:"alliés",A:"ennemis",C:"lanceur",g:"alliés",j:"invocations"};
+const state = {level:200, q:"", role:"", el:"", rel:"", sort:"nom", sel:null, preview:true, res:0, pin:null, carac:false};
+const ELORDER = ["neutre","terre","feu","eau","air","multi","soin","soutien"];
+let ALL = [];
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const strip = s => s.replace(/<[^>]+>/g,"");
+const norm = s => strip(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const elColor = e => `var(--${EL[e] ? e : "soutien"})`;
+function save(){ try{ localStorage.setItem("gc-prefs", JSON.stringify({level:state.level, preview:state.preview, res:state.res, carac:state.carac, sort:state.sort})); }catch{} }
+
+/* Stat au niveau L : base + gain × (niveau − 1), plafonné ; vérifié sur Gamosaurus (niv. 50/100/150/200). */
+function statAt(ch, L){
+  const lv = ch.cap ? Math.min(L, ch.cap) : L;
+  return Math.floor(ch.base + ch.per_level * (lv - 1) + 1e-6);
+}
+const stat = (c, key) => { const ch = c.characteristics.find(x => x.key === key); return ch ? statAt(ch, state.level) : 0; };
+function gradeAt(s, L){
+  if (!s.unlock.length) return s.levels.length;
+  let g = 0; for (const u of s.unlock) if (L >= u.level) g = u.grade; return g;
+}
+const levelOf = (s, g) => s.levels[Math.max(0, (g || 1) - 1)];
+
+/* ---------- Dégâts estimés ---------- */
+/* Le jeu affiche 0 dommage élémentaire (fiche Masse niv. 200) : le bonus « allDamageBonus » des données n'est pas compté. */
+const ctxOf = c => ({pow: stat(c, "damagePercent"), dmg: 0});
+function scale(n, kind, ctx){
+  let v = Math.floor(n * (100 + ctx.pow) / 100) + (kind === "dmg" ? ctx.dmg : 0);
+  if (kind === "dmg") v = Math.floor(v * (100 - state.res) / 100);
+  return Math.max(0, v);
+}
+const scalable = e => (e.kind === "dmg" || e.kind === "heal") && !/%/.test(strip(e.html));
+function effectHtml(e, ctx){
+  if (!state.preview || !scalable(e)) return e.html;
+  return e.html.replace(/<b>(\d+)<\/b>/g, (_, n) => `<b class="est">${scale(+n, e.kind, ctx)}</b>`);
+}
+/* Résumé « dégâts principaux » affiché à droite de la ligne */
+function mainHit(l, ctx){
+  const e = l.effects.find(x => x.kind === "dmg" && scalable(x)) || l.effects.find(x => x.kind === "heal" && scalable(x));
+  if (!e) return null;
+  const nums = [...e.html.matchAll(/<b>(\d+)<\/b>/g)].map(m => +m[1]);
+  const v = state.preview ? nums.map(n => scale(n, e.kind, ctx)) : nums;
+  return {txt: v.join("–"), kind: e.kind, el: e.element};
+}
+
+/* ---------- Analyse ---------- */
+function analyse(c){
+  const top = s => s.levels.at(-1).effects;
+  const txt = c.spells.map(s => top(s).map(e => strip(e.html)).join(" ")).join(" ").toLowerCase();
+  const heal = c.spells.filter(s => top(s).some(e => e.kind === "heal")).length;
+  const dmg = c.spells.filter(s => top(s).some(e => e.kind === "dmg")).length;
+  const roles = [];
+  if (heal >= 2) roles.push("Soin");
+  if (dmg >= 3) roles.push("Dégâts");
+  if (/repousse|attire|téléporte|teleporte|échange|avance|recule/.test(txt)) roles.push("Placement");
+  if (/-\s*\d+\s*(pa|pm|po)\b|retrait|pesanteur|immobilis/.test(txt)) roles.push("Entrave");
+  if (/bouclier|dommages reçus|résistance|réduit les dommages|invulnér/.test(txt)) roles.push("Protection");
+  if (c.spells.some(s => top(s).some(e => e.kind === "sum"))) roles.push("Invocation");
+  const count = {};
+  c.spells.forEach(s => { if (["neutre","terre","feu","eau","air"].includes(s.element)) count[s.element] = (count[s.element] || 0) + 1; });
+  const els = Object.keys(count).sort((a, b) => count[b] - count[a] || ELORDER.indexOf(a) - ELORDER.indexOf(b));
+  /* Élément principal : le plus fréquent ; plusieurs à égalité ou 3+ éléments = Multi */
+  let main = els[0] || (heal >= 2 ? "soin" : "soutien");
+  if (els.length >= 3 || (els.length >= 2 && count[els[0]] === count[els[1]])) main = "multi";
+  c.spells.forEach(s => s._i = norm([s.name, s.description, ...s.levels.at(-1).effects.map(e => e.html)].join(" ")));
+  if (c.passive) c.passive._i = norm(c.passive.name + " " + c.passive.description);
+  return {...c, roles, els, main, _n: norm(c.name)};
+}
+const qn = () => norm(state.q.trim());
+const spellMatch = s => { const q = qn(); return (!q || s._i.includes(q)) && (!state.el || s.element === state.el); };
+function hits(c){ const q = qn(); if (!q) return 0; return c.spells.filter(s => s._i.includes(q)).length + (c._n.includes(q) ? 1 : 0); }
+const filtering = () => !!(state.q.trim() || state.el);
+const visible = c => (!state.role || c.roles.includes(state.role)) && (!state.rel || c.els.includes(state.rel));
+function hl(text){
+  const q = state.q.trim(); if (!q) return esc(text);
+  const n = norm(text), nq = norm(q); let out = "", i = 0, j;
+  while ((j = n.indexOf(nq, i)) >= 0){ out += esc(text.slice(i, j)) + "<mark>" + esc(text.slice(j, j + q.length)) + "</mark>"; i = j + q.length; }
+  return out + esc(text.slice(i));
+}
+const cur = () => ALL.find(x => x.id === state.sel);
+
+/* ---------- Rendu ---------- */
+function renderRosterBar(){
+  const counts = e => ALL.filter(c => (!state.role || c.roles.includes(state.role)) && c.els.includes(e)).length;
+  $("#rosterEls").innerHTML = `<button class="elb all" data-rel="" aria-pressed="${!state.rel}" title="Tous les éléments">TOUS</button>`
+    + ["neutre","terre","feu","eau","air"].map(e => `<button class="elb" data-rel="${e}" style="--c:${elColor(e)}" aria-pressed="${state.rel === e}" title="${EL[e]} : ${counts(e)} compagnon${counts(e) > 1 ? "s" : ""}" aria-label="${EL[e]}"><i></i></button>`).join("");
+  const sel = $("#roleSel");
+  sel.className = "effect sm" + (state.role ? " active" : "");
+  sel.innerHTML = `<option value="">Rôle : tous</option>` + ROLES.map(r => `<option value="${r}"${r === state.role ? " selected" : ""}>${r}</option>`).join("");
+  $("#sortSel").value = state.sort;
+  $("#sortSel").className = "effect sm" + (state.sort !== "nom" ? " active" : "");
+}
+function renderHero(c){
+  const h = $("#hero");
+  if (!c){ h.innerHTML = ""; h.hidden = true; return; }
+  h.hidden = false;
+  const src = portraitSrc(c);
+  h.innerHTML = `<div class="hero-bg" style="--bg:url('${src}')"></div>
+    <img class="medal" src="${src}" alt="" style="--c:${elColor(c.main)}">
+    <div style="min-width:0">
+      <h2>${esc(c.name)}</h2>
+      <div class="hero-tags">
+        ${c.els.map(e => `<span class="htag el" style="--c:${elColor(e)}"><i class="dot" style="--c:${elColor(e)}"></i>${EL[e]}</span>`).join("")}
+        ${(c.roles.length ? c.roles : ["Polyvalent"]).map(r => `<span class="htag">${r}</span>`).join("")}
+      </div>
+    </div>`;
+}
+function cpButton(c, on){
+  const h = hits(c);
+  const els = c.els.map(e => EL[e]).join(", ");
+  return `<button class="cp ${on && !h ? "none" : ""}" data-id="${c.id}" style="--c:${elColor(c.main)}" aria-pressed="${c.id === state.sel}" title="${esc(c.name)}${els ? " — " + els : ""}${c.roles.length ? " · " + esc(c.roles.join(", ")) : ""}">
+    <img src="${portraitSrc(c)}" alt="${esc(c.name)}" loading="lazy">${on && h ? `<span class="hit">${h}</span>` : ""}</button>`;
+}
+function renderGrid(){
+  renderRosterBar();
+  const on = !!state.q.trim();
+  const list = ALL.filter(visible);
+  let html = "";
+  if (!list.length) html = `<p class="none-msg">Aucun compagnon pour ce filtre.</p>`;
+  else if (state.sort === "element"){
+    for (const e of ELORDER){
+      const g = list.filter(c => c.main === e);
+      if (g.length) html += `<div class="grp-h"><i class="dot" style="--c:${elColor(e)}"></i>${EL[e].toUpperCase()} <span>${g.length}</span></div>` + g.map(c => cpButton(c, on)).join("");
+    }
+  } else if (state.sort === "role"){
+    for (const r of [...ROLES, "Polyvalent"]){
+      const g = list.filter(c => (c.roles[0] || "Polyvalent") === r);
+      if (g.length) html += `<div class="grp-h">${r.toUpperCase()} <span>${g.length}</span></div>` + g.map(c => cpButton(c, on)).join("");
+    }
+  } else html = list.map(c => cpButton(c, on)).join("");
+  $("#grid").innerHTML = html;
+  const c = cur();
+  renderHero(c);
+  $("#ccount").textContent = `${list.length}/${ALL.length}`;
+}
+
+function renderFilters(){
+  const c = cur();
+  const els = c ? ["neutre","terre","feu","eau","air","soin","soutien"].filter(e => c.spells.some(s => s.element === e)) : [];
+  if (state.el && !els.includes(state.el)) state.el = "";
+  $("#chips").innerHTML = `<span class="count" style="margin:0 4px 0 2px">Sorts :</span>` + els.map(e => `<button class="chip" data-el="${e}" aria-pressed="${state.el === e}"><span class="dot" style="--c:${elColor(e)}"></span>${EL[e]}</button>`).join("")
+    + `<span class="count">${filtering() ? `<button data-reset>Effacer les filtres</button>` : ""}</span>`;
+}
+
+function spellRow(s, key, ctx){
+  const g = gradeAt(s, state.level), l = levelOf(s, g), locked = g === 0;
+  const po = (l.min_range === l.range ? `${l.range}` : `${l.min_range}–${l.range}`) + " PO";
+  const st = [`<span><span class="dot" style="--c:${elColor(s.element)}"></span>${EL[s.element] || ""}</span>`, `<span>${l.ap} PA</span>`, `<span>${po}</span>`];
+  if (l.cooldown) st.push(`<span class="warn">relance ${l.cooldown}</span>`);
+  else if (l.per_turn) st.push(`<span>${l.per_turn}/tour</span>`);
+  if (!l.los) st.push(`<span class="warn">sans LdV</span>`);
+  if (l.in_line) st.push(`<span>en ligne</span>`);
+  const hit = mainHit(l, ctx);
+  const miss = filtering() && !spellMatch(s);
+  return `<div class="spell ${locked ? "locked" : ""} ${miss ? "miss" : ""} ${state.pin === key ? "pinned" : ""}" data-key="${key}">
+    <span class="ico"><img src="${iconSrc(s)}" alt="" loading="lazy"></span>
+    <div><span class="name"><span class="nt">${hl(s.name)}</span>${locked ? `<span class="rk lock">NIV. ${s.unlock[0].level}</span>` : s.unlock.length ? `<span class="rk">RANG ${g}</span>` : ""}</span>
+      <div class="stats">${st.join("")}</div></div>
+    ${hit ? `<div class="hitsum" style="--c:${hit.kind === "heal" ? "var(--soin)" : elColor(hit.el)}"><b>${hit.txt}</b><span>${hit.kind === "heal" ? "SOIN" : state.preview ? "ESTIMÉ" : "BASE"}</span></div>` : "<div></div>"}
+  </div>`;
+}
+
+function renderList(){
+  const c = cur(), L = $("#list");
+  renderFilters();
+  if (!c){ L.innerHTML = `<div class="empty"><b>Aucun compagnon</b>Retire le filtre de rôle.</div>`; return; }
+  const ctx = ctxOf(c);
+  const pv = stat(c, "hitPoints") + stat(c, "vitality");
+  const unlocked = c.spells.filter(s => gradeAt(s, state.level) > 0).length;
+  const shown = c.spells.map((s, i) => ({s, i})).filter(({s}) => !filtering() || spellMatch(s));
+  const minor = [["pushDamageBonus","Do. poussée"],["tackleBlock","Tacle"],["tackleEvade","Fuite"],["apReduction","Retrait PA"],["DodgeApLostProbability","Esquive PA"],["mpReduction","Retrait PM"],["DodgeMpLostProbability","Esquive PM"],["maxSummonedCreaturesBoost","Invocations"],["magicFind","Prospection"]];
+  const resk = [["neutralElementResistPercent","Neutre"],["earthElementResistPercent","Terre"],["fireElementResistPercent","Feu"],["waterElementResistPercent","Eau"],["airElementResistPercent","Air"]];
+  L.innerHTML = `
+    <div class="about">
+      ${c.passive ? `<div class="passive spell-like" data-key="p"><span class="ico"><img src="${iconSrc(c.passive)}" alt=""></span><div><span class="name">${esc(c.passive.name)} <span class="rk">PASSIF</span></span><div class="tagline">${esc(c.passive.description)}</div></div></div>` : ""}
+      <details class="carac" id="carac" ${state.carac ? "open" : ""}>
+        <summary><span><b>${pv}</b> PV</span><span class="sep">·</span><span><b>${stat(c,"actionPoints")}</b> PA</span><span class="sep">·</span><span><b>${stat(c,"movementPoints")}</b> PM</span><span class="sep">·</span><span><b>${stat(c,"damagePercent")}</b> Puissance</span><span class="chev">›</span></summary>
+        <div class="carac-body">
+          <div class="res">${resk.map(([k,l]) => `<span><b>${stat(c,k)}%</b>${l}</span>`).join("")}</div>
+          <div class="kvgrid">${minor.map(([k,l]) => `<span>${l} <b>${stat(c,k)}</b></span>`).join("")}</div>
+          <p class="note">Niveau ${state.level}. Les 52 compagnons ont les mêmes caractéristiques : seul le niveau compte.</p>
+        </div>
+      </details>
+      <div class="calc">
+        <label class="switch"><input type="checkbox" id="prevOn" ${state.preview ? "checked" : ""}><span></span>Dégâts estimés</label>
+        <span>Puissance <b>${ctx.pow}</b></span>
+        <label class="resin">Rés. cible <input id="res" type="number" min="-100" max="100" step="1" value="${state.res}" ${state.preview ? "" : "disabled"}>%</label>
+      </div>
+    </div>
+    <div class="cols">SORTS<span class="r">${unlocked}/${c.spells.length} débloqués au niv. ${state.level}</span></div>
+    ${shown.length ? `<div class="spells">${shown.map(({s, i}) => spellRow(s, `s${i}`, ctx)).join("")}</div>`
+      : `<div class="empty"><b>Aucun sort ne correspond chez ${esc(c.name)}</b>Essaie un autre mot ou retire un filtre.</div>`}`;
+}
+
+function render(){ renderGrid(); renderList(); }
+/* Après un filtre de la grille : garde le compagnon s'il reste visible, sinon prend le premier */
+function refilter(){
+  const vis = ALL.filter(visible);
+  if (!vis.some(c => c.id === state.sel) && vis[0]){ state.sel = vis[0].id; $("#list").scrollTop = 0; }
+  render();
+}
+function keepScroll(fn){ const el = $("#list"), y = el.scrollTop; fn(); el.scrollTop = y; }
+
+/* ---------- Infobulle ---------- */
+function fxList(list, ctx){
+  return `<ul class="fx">${list.map(e => {
+    const tg = [...new Set((e.target || "").split(",").map(t => TARGET[t]).filter(Boolean))].join(" + ");
+    const meta = [e.zone, tg, e.duration > 0 ? `${e.duration} tour${e.duration > 1 ? "s" : ""}` : e.duration < 0 ? "infini" : ""].filter(Boolean).join(" · ");
+    const base = state.preview && scalable(e) ? `base ${[...e.html.matchAll(/<b>(\d+)<\/b>/g)].map(m => m[1]).join("–")}` : "";
+    const c = e.kind === "heal" ? "var(--soin)" : e.element ? elColor(e.element) : "";
+    return `<li class="${e.kind}" ${c ? `style="--c:${c}"` : ""}>${effectHtml(e, ctx)}${meta || base ? `<span class="meta">${[base, meta].filter(Boolean).join(" · ")}</span>` : ""}</li>`;
+  }).join("")}</ul>`;
+}
+function tipHTML(s, isPassive){
+  const c = cur(), ctx = ctxOf(c);
+  const g = isPassive ? s.levels.length : gradeAt(s, state.level), l = levelOf(s, g), locked = !isPassive && g === 0;
+  const kv = [];
+  if (!isPassive){
+    kv.push(`<span>Coût <b>${l.ap} PA</b></span>`);
+    kv.push(l.cooldown ? `<span class="warn">Relance <b>${l.cooldown} tour${l.cooldown > 1 ? "s" : ""}</b></span>` : `<span>Relance <b>aucune</b></span>`);
+    kv.push(`<span class="full">Portée <b>${l.min_range} – ${l.range}</b>${l.range_boost ? " (modifiable)" : ""}${l.los ? "" : ` · <span class="warn">sans ligne de vue</span>`}${l.in_line ? " · en ligne" : ""}${l.in_diagonal ? " · en diagonale" : ""}${l.free_cell ? " · case libre" : ""}</span>`);
+    if (l.per_turn || l.per_target){ kv.push(`<span>${l.per_turn ? `Par tour <b>${l.per_turn}</b>` : ""}</span>`); kv.push(`<span>${l.per_target ? `Par cible <b>${l.per_target}</b>` : ""}</span>`); }
+    if (l.initial_cooldown) kv.push(`<span class="full warn">Utilisable à partir du tour <b>${l.initial_cooldown + 1}</b></span>`);
+    if (l.crit) kv.push(`<span>Critique <b>${l.crit}%</b></span>`);
+  }
+  const rank = isPassive ? `<span>Passif</span>` : locked ? `<span class="lock">Débloqué au niveau ${s.unlock[0].level}</span>` : s.unlock.length ? `<span>Rang ${g}/${s.unlock.length}</span>` : "";
+  const ranks = !isPassive && s.unlock.length ? `<div class="tip-sec"><div class="tip-ranks">${s.unlock.map(u => `<span class="${u.grade === g ? "cur" : ""}">Rang ${u.grade} · niv. ${u.level}</span>`).join("")}</div></div>` : "";
+  const est = state.preview ? `<small>estimé niv. ${state.level}${state.res ? ` · rés. ${state.res}%` : ""}</small>` : "";
+  return `<div class="tip-head"><span class="ico"><img src="${iconSrc(s)}" alt=""></span><div><h3>${esc(s.name)}</h3><div class="rank">${rank}</div></div></div>
+    ${kv.length ? `<div class="tip-sec"><div class="kv">${kv.join("")}</div></div>` : ""}
+    ${s.description ? `<div class="tip-sec"><p class="desc">${esc(s.description)}</p></div>` : ""}
+    ${l.effects.length ? `<div class="tip-h">EFFETS${est}</div>${fxList(l.effects, ctx)}` : ""}
+    ${l.crit_effects.length && l.crit ? `<div class="tip-h">EFFETS CRITIQUES</div>${fxList(l.crit_effects, ctx)}` : ""}
+    ${ranks}
+    <div class="tip-foot"><span>${state.pin ? "Clic ou Échap pour fermer" : "Clic pour épingler"}</span><span>${esc(c.name)}</span></div>`;
+}
+const tip = document.createElement("div"); tip.className = "tip"; document.body.appendChild(tip);
+function spellFor(key){ const c = cur(); return key === "p" ? {s: c.passive, p: true} : {s: c.spells[+key.slice(1)], p: false}; }
+function showTip(el){
+  const {s, p} = spellFor(el.dataset.key);
+  tip.innerHTML = tipHTML(s, p);
+  tip.classList.toggle("pinned", !!state.pin);
+  tip.classList.add("on");
+  const r = el.getBoundingClientRect(), win = $("#win").getBoundingClientRect();
+  const W = tip.offsetWidth, H = tip.offsetHeight, vw = innerWidth, vh = innerHeight, m = 10;
+  let x;
+  if (win.right + m + W <= vw) x = win.right + m;
+  else if (win.left - m - W >= 0) x = win.left - m - W;
+  else x = r.right - W;
+  x = Math.max(m, Math.min(x, vw - W - m));
+  let y = vw < 520 ? (r.bottom + 6 + H <= vh ? r.bottom + 6 : r.top - H - 6) : r.top - 8;
+  y = Math.max(m, Math.min(y, vh - H - m));
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function unpin(){ state.pin = null; document.querySelectorAll(".pinned").forEach(x => x.classList.remove("pinned")); tip.classList.remove("on", "pinned"); }
+const hoverable = "[data-key]";
+document.addEventListener("mouseover", e => {
+  if (state.pin) return;
+  const sp = e.target.closest(hoverable);
+  if (sp && !sp.classList.contains("tip")) showTip(sp); else if (!e.target.closest(".tip")) tip.classList.remove("on");
+});
+$("#list").addEventListener("scroll", () => { if (!state.pin) tip.classList.remove("on"); });
+
+/* ---------- Interactions ---------- */
+const q = $("#q"), searchWrap = $("#searchWrap");
+document.addEventListener("click", e => {
+  const sp = e.target.closest(hoverable);
+  if (sp){ const k = sp.dataset.key, was = state.pin === k; unpin(); if (!was){ state.pin = k; sp.classList.add("pinned"); } showTip(sp); return; }
+  if (state.pin && !e.target.closest(".tip")) unpin();
+  const rb = e.target.closest("[data-rel]");
+  if (rb){ state.rel = state.rel === rb.dataset.rel ? "" : rb.dataset.rel; return refilter(); }
+  const t = e.target.closest("[data-id],[data-el],[data-reset],.clear");
+  if (!t) return;
+  if (t.matches(".clear")){ q.value = ""; state.q = ""; searchWrap.classList.remove("has-value"); q.focus(); return render(); }
+  if (t.dataset.id){ state.sel = +t.dataset.id; render(); $("#list").scrollTop = 0; return; }
+  if (t.matches("[data-reset]")){ state.el = ""; state.q = ""; q.value = ""; searchWrap.classList.remove("has-value"); return render(); }
+  if (t.dataset.el){ state.el = state.el === t.dataset.el ? "" : t.dataset.el; return keepScroll(renderList); }
+});
+document.addEventListener("change", e => {
+  if (e.target.id === "roleSel"){ state.role = e.target.value; return refilter(); }
+  if (e.target.id === "sortSel"){ state.sort = e.target.value; save(); return renderGrid(); }
+  if (e.target.id === "prevOn"){ state.preview = e.target.checked; save(); return keepScroll(renderList); }
+  if (e.target.id === "res"){ state.res = Math.max(-100, Math.min(100, Math.round(+e.target.value || 0))); save(); return keepScroll(renderList); }
+});
+document.addEventListener("toggle", e => { if (e.target.id === "carac"){ state.carac = e.target.open; save(); } }, true);
+$("#lvl").addEventListener("input", e => {
+  const v = Math.round(+e.target.value);
+  if (!(v >= 1 && v <= 200)) return;
+  state.level = v; save(); unpin(); keepScroll(renderList);
+});
+$("#lvl").addEventListener("blur", e => { e.target.value = state.level; });
+$("#lvl").addEventListener("wheel", e => { e.preventDefault(); const v = Math.max(1, Math.min(200, state.level + (e.deltaY < 0 ? 1 : -1) * (e.shiftKey ? 10 : 1))); e.target.value = v; e.target.dispatchEvent(new Event("input")); }, {passive:false});
+q.addEventListener("input", () => { state.q = q.value; searchWrap.classList.toggle("has-value", !!q.value); render(); });
+document.addEventListener("keydown", e => {
+  const typing = ["INPUT","SELECT"].includes(document.activeElement.tagName);
+  if (e.key === "/" && !typing){ e.preventDefault(); q.focus(); }
+  if (e.key === "Escape" && state.pin) unpin();
+  if (e.key === "Escape" && document.activeElement === q){ q.value = ""; q.dispatchEvent(new Event("input")); q.blur(); }
+});
+
+/* ---------- Fenêtre : déplacer (barre de titre) et redimensionner (coins) ---------- */
+const WIN = (function(){
+  const win = $("#win"), KEY = "gc-rect", MIN_W = 340, MAX_W = 1100, MIN_H = 420, M = 8;
+  let rect = null;
+  const defaults = () => { const w = Math.min(500, innerWidth - 2*M), h = Math.min(860, innerHeight - 64); return {x:(innerWidth - w)/2, y:32, w, h}; };
+  function clamp(r){
+    r.w = Math.max(MIN_W, Math.min(MAX_W, r.w, innerWidth - 2*M));
+    r.h = Math.max(MIN_H, Math.min(r.h, innerHeight - 2*M));
+    r.x = Math.max(M, Math.min(r.x, innerWidth - r.w - M));
+    r.y = Math.max(M, Math.min(r.y, innerHeight - r.h - M));
+    return r;
+  }
+  function apply(r){ rect = clamp(r); for (const k of ["x","y","w","h"]) win.style.setProperty("--" + k, Math.round(rect[k]) + "px"); }
+  const persist = () => { try{ localStorage.setItem(KEY, JSON.stringify(rect)); }catch{} };
+  try{ const s = JSON.parse(localStorage.getItem(KEY) || "null"); apply(s && s.w ? s : defaults()); }catch{ apply(defaults()); }
+  if (HOSTED) return {get: () => ({...rect}), set: () => {}};
+  document.querySelectorAll("[data-grip]").forEach(g => {
+    let d = null;
+    g.addEventListener("pointerdown", e => { e.preventDefault(); g.setPointerCapture(e.pointerId); d = {c:g.dataset.grip, x:e.clientX, y:e.clientY, r:{...rect}}; document.body.classList.add("resizing"); tip.classList.remove("on"); });
+    g.addEventListener("pointermove", e => {
+      if (!d) return;
+      const dx = e.clientX - d.x, dy = e.clientY - d.y, r0 = d.r;
+      if (d.c === "br") return apply({x:r0.x, y:r0.y, w:r0.w + dx, h:r0.h + dy});
+      const right = r0.x + r0.w, bottom = r0.y + r0.h;
+      const w = Math.max(MIN_W, Math.min(MAX_W, r0.w - dx)), h = Math.max(MIN_H, r0.h - dy);
+      apply({x:right - w, y:bottom - h, w, h});
+    });
+    const end = () => { if (!d) return; d = null; document.body.classList.remove("resizing"); persist(); };
+    g.addEventListener("pointerup", end); g.addEventListener("pointercancel", end);
+    g.addEventListener("dblclick", () => { apply(defaults()); try{ localStorage.removeItem(KEY); }catch{} });
+  });
+  const bar = $(".titlebar"); let mv = null;
+  bar.addEventListener("pointerdown", e => {
+    if (e.button !== 0 || e.target.closest("button,input,label") || innerWidth <= 520) return;
+    e.preventDefault(); bar.setPointerCapture(e.pointerId); mv = {x:e.clientX, y:e.clientY, r:{...rect}};
+    document.body.classList.add("moving"); tip.classList.remove("on");
+  });
+  bar.addEventListener("pointermove", e => { if (mv) apply({...mv.r, x:mv.r.x + e.clientX - mv.x, y:mv.r.y + e.clientY - mv.y}); });
+  const endMove = () => { if (!mv) return; mv = null; document.body.classList.remove("moving"); persist(); };
+  bar.addEventListener("pointerup", endMove); bar.addEventListener("pointercancel", endMove);
+  addEventListener("resize", () => apply({...rect}));
+  return {get: () => ({...rect}), set: r => { apply(r); persist(); }};
+})();
+
+/* ---------- Grimoire : refermer en livre flottant / rouvrir ---------- */
+(function(){
+  if (HOSTED) return;
+  const win = $("#win"), w = $("#widget"), KEY = "gc-book", M = 8, S = 64;
+  let st = {closed:false, bx:null, by:null};
+  try{ st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || "{}")); }catch{}
+  const persist = () => { try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch{} };
+  function place(x, y){
+    st.bx = Math.max(M, Math.min(x, innerWidth - S - M));
+    st.by = Math.max(M, Math.min(y, innerHeight - S - 18 - M));
+    w.style.setProperty("--bx", st.bx + "px"); w.style.setProperty("--by", st.by + "px");
+  }
+  let busy = false; const lock = ms => { busy = true; setTimeout(() => busy = false, ms); };
+  function close(){
+    if (busy) return; lock(320);
+    if (st.bx == null){ const r = WIN.get(); place(r.x, r.y); }
+    unpin();
+    win.classList.remove("anim-in"); win.classList.add("anim-out");
+    setTimeout(() => { win.classList.add("closed"); win.classList.remove("anim-out"); w.classList.remove("opening"); w.classList.add("on", "pop"); setTimeout(() => w.classList.remove("pop"), 250); }, 150);
+    st.closed = true; persist();
+  }
+  function open(){
+    if (busy) return; lock(480);
+    w.classList.add("opening");
+    setTimeout(() => {
+      const r = WIN.get(); WIN.set({...r, x:st.bx, y:st.by});
+      w.classList.remove("on", "opening");
+      win.classList.remove("closed"); win.classList.add("anim-in");
+      setTimeout(() => win.classList.remove("anim-in"), 260);
+    }, 200);
+    st.closed = false; persist();
+  }
+  $("#closeBook").addEventListener("click", e => { e.stopPropagation(); close(); });
+  let d = null;
+  w.addEventListener("pointerdown", e => { w.setPointerCapture(e.pointerId); d = {x:e.clientX, y:e.clientY, bx:st.bx, by:st.by, moved:false}; });
+  w.addEventListener("pointermove", e => {
+    if (!d) return;
+    const dx = e.clientX - d.x, dy = e.clientY - d.y;
+    if (!d.moved && Math.hypot(dx, dy) < 4) return;
+    d.moved = true; w.classList.add("dragging"); place(d.bx + dx, d.by + dy);
+  });
+  w.addEventListener("pointerup", () => { if (!d) return; const moved = d.moved; d = null; w.classList.remove("dragging"); if (moved) persist(); else open(); });
+  w.addEventListener("pointercancel", () => { d = null; w.classList.remove("dragging"); });
+  w.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); open(); } });
+  addEventListener("resize", () => { if (st.bx != null) place(st.bx, st.by); });
+  if (st.closed){ place(st.bx ?? WIN.get().x, st.by ?? WIN.get().y); win.classList.add("closed"); w.classList.add("on"); }
+})();
+
+/* ---------- Mode appli (Qt) : la fenêtre native gère position, taille et livre fermé ---------- */
+(function(){
+  if (HOST !== "qt") return;
+  const win = $("#win");
+  let bridge = null;
+  new QWebChannel(qt.webChannelTransport, ch => { bridge = ch.objects.bridge; });
+  document.querySelectorAll("[data-grip]").forEach(g => g.addEventListener("pointerdown", e => {
+    e.preventDefault(); tip.classList.remove("on"); bridge && bridge.startResize(g.dataset.grip);
+  }));
+  $(".titlebar").addEventListener("pointerdown", e => {
+    if (e.button !== 0 || e.target.closest("button,input,label")) return;
+    e.preventDefault(); bridge && bridge.startMove();
+  });
+  let busy = false;
+  $("#closeBook").addEventListener("click", e => {
+    e.stopPropagation(); if (busy) return; busy = true;
+    unpin(); win.classList.add("anim-out");
+    setTimeout(() => { bridge && bridge.collapse(); win.classList.remove("anim-out"); busy = false; }, 150);
+  });
+  window.playOpen = () => { win.classList.remove("anim-in"); void win.offsetWidth; win.classList.add("anim-in"); setTimeout(() => win.classList.remove("anim-in"), 260); };
+})();
+
+(async function init(){
+  try{
+    const p = JSON.parse(localStorage.getItem("gc-prefs") || "{}");
+    if (p.level >= 1 && p.level <= 200) state.level = p.level;
+    if (typeof p.preview === "boolean") state.preview = p.preview;
+    if (Number.isFinite(p.res)) state.res = p.res;
+    if (typeof p.carac === "boolean") state.carac = p.carac;
+    if (["nom","element","role"].includes(p.sort)) state.sort = p.sort;
+  }catch{}
+  $("#lvl").value = state.level;
+  const data = DATA || await (await fetch(DATA_URL)).json();
+  $("#rel").textContent = `v${data.release}`;
+  ALL = data.companions.map(analyse).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  state.sel = (ALL.find(c => c.name === "Lumino") || ALL[0]).id;
+  render();
+})();
+</script>
+</body>
+</html>
