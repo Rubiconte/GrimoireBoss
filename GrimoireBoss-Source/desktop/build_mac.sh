@@ -25,6 +25,14 @@ codesign --verify --deep "$APP"
 # Contrôle : le moteur web de Qt est bien embarqué (sinon l'appli ne s'ouvre pas).
 find "$APP" -name "QtWebEngineCore.framework" -maxdepth 6 | grep -q . || { echo "QtWebEngineCore absent de l'appli"; exit 1; }
 
+# Démarrage : l'application doit toujours tourner après 20 s (bibliothèque manquante, plantage…).
+"$APP/Contents/MacOS/Grimoire Boss" &
+pid=$!
+sleep 20
+kill -0 "$pid" 2>/dev/null || { echo "Grimoire Boss s'est arrêté au démarrage"; exit 1; }
+kill "$pid"
+wait "$pid" 2>/dev/null || true
+
 DMG="dist/GrimoireBoss-$VERSION-mac-$ARCH.dmg"
 STAGE=$(mktemp -d)
 cp -R "$APP" "$STAGE/"

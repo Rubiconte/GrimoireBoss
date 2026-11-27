@@ -41,6 +41,14 @@ codesign --verify --deep "$APP"
 # Contrôle : le moteur web de Qt est bien embarqué (sinon l'appli ne s'ouvre pas).
 find "$APP" -name "QtWebEngineCore.framework" -maxdepth 6 | grep -q . || { echo "QtWebEngineCore absent de l'appli"; exit 1; }
 
+# Démarrage : l'application doit toujours tourner après 20 s (bibliothèque manquante, plantage…).
+"$APP/Contents/MacOS/Grimoire Compagnon" &
+pid=$!
+sleep 20
+kill -0 "$pid" 2>/dev/null || { echo "Grimoire Compagnon s'est arrêté au démarrage"; exit 1; }
+kill "$pid"
+wait "$pid" 2>/dev/null || true
+
 # Contrôle : la page de l'appli se construit avec les ressources embarquées.
 python3 -c "import sys; sys.path.insert(0, 'src'); from pathlib import Path; from grimoirecompagnon.page import write_qt_page; print(write_qt_page(Path('build/check.html')))"
 
